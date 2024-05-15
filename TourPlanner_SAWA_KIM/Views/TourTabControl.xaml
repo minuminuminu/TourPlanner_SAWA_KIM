@@ -10,10 +10,45 @@
 		<!-- Home Tab -->
 		<TabItem Header="General">
 			<!-- Content for Home tab -->
-			<StackPanel>
-				<TextBlock Text="Welcome to the Home Page" FontSize="16" Padding="10" />
-				<!-- Additional content here -->
-			</StackPanel>
+			<ScrollViewer VerticalScrollBarVisibility="Auto">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+
+					<TextBlock Text="Tour Name:" FontWeight="Bold" Grid.Row="0" Grid.Column="0" Margin="5" />
+					<TextBlock Text="{Binding SelectedTour.Name}" Grid.Row="0" Grid.Column="1" Margin="5" />
+
+					<TextBlock Text="Tour Description:" FontWeight="Bold" Grid.Row="1" Grid.Column="0" Margin="5" />
+					<TextBlock Text="{Binding SelectedTour.Description}" Grid.Row="1" Grid.Column="1" Margin="5" />
+
+					<TextBlock Text="From:" FontWeight="Bold" Grid.Row="2" Grid.Column="0" Margin="5" />
+					<TextBlock Text="{Binding SelectedTour.From}" Grid.Row="2" Grid.Column="1" Margin="5" />
+
+					<TextBlock Text="To:" FontWeight="Bold" Grid.Row="3" Grid.Column="0" Margin="5" />
+					<TextBlock Text="{Binding SelectedTour.To}" Grid.Row="3" Grid.Column="1" Margin="5" />
+
+					<TextBlock Text="Transport Type:" FontWeight="Bold" Grid.Row="4" Grid.Column="0" Margin="5" />
+					<TextBlock Text="{Binding SelectedTour.TransportType}" Grid.Row="4" Grid.Column="1" Margin="5" />
+
+					<TextBlock Text="Tour Distance:" FontWeight="Bold" Grid.Row="5" Grid.Column="0" Margin="5" />
+					<TextBlock Text="{Binding SelectedTour.Distance}" Grid.Row="5" Grid.Column="1" Margin="5" />
+
+					<TextBlock Text="Estimated Time:" FontWeight="Bold" Grid.Row="6" Grid.Column="0" Margin="5" />
+					<TextBlock Text="{Binding SelectedTour.EstimatedTime}" Grid.Row="6" Grid.Column="1" Margin="5" />
+				</Grid>
+			</ScrollViewer>
 		</TabItem>
 
 		<!-- Account Tab -->

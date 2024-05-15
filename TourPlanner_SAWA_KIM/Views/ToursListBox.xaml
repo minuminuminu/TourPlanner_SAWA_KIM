@@ -6,9 +6,9 @@
              xmlns:local="clr-namespace:TourPlanner_SAWA_KIM.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-	<ListBox Name="listbox">
-		<ListBoxItem Content="Test 1" />
-		<ListBoxItem Content="Test 2" />
-		<ListBoxItem Content="Test 3" />
+	<ListBox Name="TourListBox"
+			 ItemsSource="{Binding Tours}"
+			 DisplayMemberPath="Name"
+			 SelectedItem="{Binding SelectedTour}">
 	</ListBox>
 </UserControl>

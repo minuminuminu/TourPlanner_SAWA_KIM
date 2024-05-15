@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TourPlanner_SAWA_KIM.ViewModels;
 
 namespace TourPlanner_SAWA_KIM.Views
 {
@@ -23,6 +24,7 @@ namespace TourPlanner_SAWA_KIM.Views
         public TourTabControl()
         {
             InitializeComponent();
+            DataContext = new TourTabControlViewModel();
         }
     }
 }
