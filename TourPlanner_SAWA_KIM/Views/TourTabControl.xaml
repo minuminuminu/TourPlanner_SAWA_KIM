@@ -7,9 +7,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 	<TabControl>
-		<!-- Home Tab -->
+		<!-- General Tab -->
 		<TabItem Header="General">
-			<!-- Content for Home tab -->
 			<ScrollViewer VerticalScrollBarVisibility="Auto">
 				<Grid>
 					<Grid.RowDefinitions>
@@ -51,21 +50,17 @@
 			</ScrollViewer>
 		</TabItem>
 
-		<!-- Account Tab -->
+		<!-- Route Tab -->
 		<TabItem Header="Route">
-			<!-- Content for Account tab -->
 			<StackPanel>
-				<TextBlock Text="Account Settings" FontSize="16" Padding="10" />
-				<!-- Additional content here -->
+				<TextBlock Text="Route Image tbd" FontSize="16" Padding="10" />
 			</StackPanel>
 		</TabItem>
 
-		<!-- Another Tab -->
+		<!-- Misc Tab -->
 		<TabItem Header="Misc">
-			<!-- Content for Settings tab -->
 			<StackPanel>
-				<TextBlock Text="Configure your settings" FontSize="16" Padding="10" />
-				<!-- Additional content here -->
+				<TextBlock Text="Misc stuff tbd" FontSize="16" Padding="10" />
 			</StackPanel>
 		</TabItem>
 	</TabControl>
