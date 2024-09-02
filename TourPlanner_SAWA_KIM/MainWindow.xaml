@@ -1,0 +1,67 @@
+﻿<Window x:Class="TourPlanner_SAWA_KIM.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TourPlanner_SAWA_KIM"
+		xmlns:views="clr-namespace:TourPlanner_SAWA_KIM.Views"
+        mc:Ignorable="d"
+        Title="Tour Planner" Height="450" Width="800">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<!-- MENU BAR -->
+		<Menu Grid.Row="0">
+			<MenuItem Header="File">
+				<MenuItem Header="New" />
+				<MenuItem Header="Open" />
+				<MenuItem Header="Save" />
+				<Separator />
+				<MenuItem Header="Exit" />
+			</MenuItem>
+			<MenuItem Header="Edit">
+				<MenuItem Header="Cut" />
+				<MenuItem Header="Copy" />
+				<MenuItem Header="Paste" />
+			</MenuItem>
+			<MenuItem Header="Options" />
+			<MenuItem Header="Help">
+				<MenuItem Header="About" />
+			</MenuItem>
+		</Menu>
+
+		<!-- SEARCH BAR -->
+		<views:SearchBar Grid.Row="1" x:Name="SearchBar" DataContext="{Binding SearchBarViewModel}" />
+
+		<!-- Main content area -->
+		<Grid Grid.Row="2">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="250" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<!-- LEFT SIDE CONTENT -->
+				<views:ToursList Grid.Column="0" x:Name="ToursList" DataContext="{Binding ToursListViewModel}" />
+
+				<!-- RIGHT SIDE CONTENT -->
+				<Grid Grid.Column="1">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+
+					<!-- TOUR GENERAL/ROUTE/MISC TABS -->
+					<views:ToursOverview x:Name="ToursOverview" DataContext="{Binding ToursOverviewViewModel}" />
+
+					<!-- TOURS LOGS -->
+					<views:ToursLogs Grid.Row="1" x:Name="ToursLogs" DataContext="{Binding ToursLogsViewModel}" />
+				</Grid>
+			</Grid>
+		</Grid>
+	</Grid>
+</Window>

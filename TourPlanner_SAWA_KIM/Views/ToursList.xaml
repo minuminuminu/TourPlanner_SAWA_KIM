@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="TourPlanner_SAWA_KIM.Views.ToursList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TourPlanner_SAWA_KIM.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<!-- TOURS + BUTTONS -->
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+
+			<TextBlock Text="Tours" VerticalAlignment="Center" Margin="5,0,0,0" />
+
+			<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+				<Button Content="+" VerticalAlignment="Center" Command="{Binding AddTourCommand}" />
+				<Button Content="-" VerticalAlignment="Center" Command="{Binding RemoveTourCommand}" />
+				<Button Content="..." VerticalAlignment="Center" Command="{Binding ModifyTourCommand}" />
+			</StackPanel>
+		</Grid>
+
+		<!-- TOURS LISTBOX -->
+		<ListBox Grid.Row="1" Name="ToursListBox" ItemsSource="{Binding Tours}" DisplayMemberPath="Name" SelectedItem="{Binding CurrentTour}" />
+	</Grid>
+</UserControl>
