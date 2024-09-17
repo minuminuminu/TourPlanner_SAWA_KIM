@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using TourPlanner_SAWA_KIM.BLL;
 using TourPlanner_SAWA_KIM.Mediators;
 using TourPlanner_SAWA_KIM.Models;
 using TourPlanner_SAWA_KIM.Views.Windows;
@@ -17,6 +18,7 @@ namespace TourPlanner_SAWA_KIM.ViewModels
     {
         private Tour _currentTour;
         private IMediator _mediator;
+        private readonly TourService _tourService;
 
         public ObservableCollection<Tour> Tours { get; set; }
 
@@ -44,7 +46,7 @@ namespace TourPlanner_SAWA_KIM.ViewModels
             _mediator = mediator;
         }
 
-        public ToursListViewModel()
+        public ToursListViewModel(TourService tourService)
         {
             Tours = new ObservableCollection<Tour>();
 
@@ -52,10 +54,33 @@ namespace TourPlanner_SAWA_KIM.ViewModels
             RemoveTourCommand = new RelayCommand(RemoveTour);
             ModifyTourCommand = new RelayCommand(ModifyTour);
 
-            LoadDummyTours();
+            _tourService = tourService;
+
+            //LoadDummyTours();
+            LoadTours();
         }
 
-        private void AddTour()
+        //private void AddTour()
+        //{
+        //    var addTourWindow = new AddTourWindow();
+        //    var addTourViewModel = new AddTourWindowViewModel();
+
+        //    addTourWindow.DataContext = addTourViewModel;
+        //    addTourViewModel.CloseAction = () => addTourWindow.Close();
+
+        //    if (addTourWindow.ShowDialog() == true)
+        //    {
+        //        var newTour = new Tour(addTourViewModel.Name, addTourViewModel.Description, addTourViewModel.From, addTourViewModel.To, addTourViewModel.TransportType)
+        //        {
+        //            Distance = addTourViewModel.Distance,
+        //            EstimatedTime = addTourViewModel.EstimatedTime
+        //        };
+
+        //        Tours.Add(newTour);
+        //    }
+        //}
+
+        private async void AddTour()
         {
             var addTourWindow = new AddTourWindow();
             var addTourViewModel = new AddTourWindowViewModel();
@@ -71,25 +96,68 @@ namespace TourPlanner_SAWA_KIM.ViewModels
                     EstimatedTime = addTourViewModel.EstimatedTime
                 };
 
-                Tours.Add(newTour);
+                try
+                {
+                    var addedTour = await _tourService.AddTourAsync(newTour);
+                    Tours.Add(addedTour);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
             }
         }
 
-        private void RemoveTour()
+        //private void RemoveTour()
+        //{
+        //    if(CurrentTour == null)
+        //    {
+        //        MessageBox.Show("Select a Tour to delete first!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //    } 
+        //    else
+        //    {
+        //        Tours.Remove(CurrentTour);
+        //        CurrentTour = null;
+        //        _mediator?.Notify(this, "TourRemoved");
+        //    }
+        //}
+
+        private async void RemoveTour()
         {
-            if(CurrentTour == null)
+            if (CurrentTour == null)
             {
                 MessageBox.Show("Select a Tour to delete first!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            } 
+            }
             else
             {
-                Tours.Remove(CurrentTour);
-                CurrentTour = null;
-                _mediator?.Notify(this, "TourRemoved");
+                try
+                {
+                    await _tourService.DeleteTourAsync(CurrentTour.Id);
+                    Tours.Remove(CurrentTour);
+                    CurrentTour = null;
+                    _mediator?.Notify(this, "TourRemoved");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
             }
         }
 
-        private void ModifyTour()
+        //private void ModifyTour()
+        //{
+        //    if (CurrentTour == null)
+        //    {
+        //        MessageBox.Show("Select a Tour to modify!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //    }
+        //    else
+        //    {
+
+        //        _mediator?.Notify(CurrentTour, "TourModified");
+        //    }
+        //}
+
+        private async void ModifyTour()
         {
             if (CurrentTour == null)
             {
@@ -97,40 +165,51 @@ namespace TourPlanner_SAWA_KIM.ViewModels
             }
             else
             {
+                var modifyTourWindow = new AddTourWindow();
+                var modifyTourViewModel = new AddTourWindowViewModel(CurrentTour);
 
-                _mediator?.Notify(CurrentTour, "TourModified");
+                modifyTourWindow.DataContext = modifyTourViewModel;
+                modifyTourViewModel.CloseAction = () => modifyTourWindow.Close();
+
+                if (modifyTourWindow.ShowDialog() == true)
+                {
+                    CurrentTour.Name = modifyTourViewModel.Name;
+                    CurrentTour.Description = modifyTourViewModel.Description;
+                    CurrentTour.From = modifyTourViewModel.From;
+                    CurrentTour.To = modifyTourViewModel.To;
+                    CurrentTour.TransportType = modifyTourViewModel.TransportType;
+                    CurrentTour.Distance = modifyTourViewModel.Distance;
+                    CurrentTour.EstimatedTime = modifyTourViewModel.EstimatedTime;
+
+                    try
+                    {
+                        await _tourService.UpdateTourAsync(CurrentTour);
+
+                        RaisePropertyChangedEvent(nameof(CurrentTour));
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                }
             }
         }
 
-        private void LoadDummyTours()
+        private async void LoadTours()
         {
-            Tours.Add(new Tour("Mountain Hike", "A challenging mountain hike.", "Trailhead", "Summit", "Hiking")
+            try
             {
-                Distance = 10.5,
-                EstimatedTime = new TimeSpan(5, 0, 0),
-                RouteImage = @"C:\Images\MountainHike.png"
-            });
+                var tours = await _tourService.GetAllToursAsync();
 
-            Tours.Add(new Tour("Beach Run", "A run along the beach.", "Beach Start", "Beach End", "Running")
+                foreach (var tour in tours)
+                {
+                    Tours.Add(tour);
+                }
+            }
+            catch (Exception ex)
             {
-                Distance = 5.0,
-                EstimatedTime = new TimeSpan(0, 45, 0),
-                RouteImage = @"C:\Images\BeachRun.png"
-            });
-
-            Tours.Add(new Tour("City Tour", "A relaxing tour through the city’s landmarks.", "City Center", "Old Town", "Walking")
-            {
-                Distance = 8.0,
-                EstimatedTime = new TimeSpan(3, 0, 0),
-                RouteImage = @"C:\Images\CityTour.png"
-            });
-
-            Tours.Add(new Tour("Forest Trek", "A peaceful trek through the dense forest.", "Forest Entrance", "Lake View", "Hiking")
-            {
-                Distance = 12.3,
-                EstimatedTime = new TimeSpan(6, 30, 0),
-                RouteImage = @"C:\Images\ForestTrek.png"
-            });
+                Debug.WriteLine(ex.Message);
+            }
         }
     }
 }

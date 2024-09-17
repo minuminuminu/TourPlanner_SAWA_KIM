@@ -21,7 +21,6 @@ namespace TourPlanner_SAWA_KIM
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainWindowViewModel();
         }
     }
 }
