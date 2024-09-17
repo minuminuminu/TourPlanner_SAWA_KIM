@@ -58,10 +58,31 @@
 		</TabItem>
 
 		<!-- Misc Tab -->
-		<TabItem Header="Misc">
-			<StackPanel>
-				<TextBlock Text="Misc stuff tbd" FontSize="16" Padding="10" />
-			</StackPanel>
+		<TabItem Header="Misc" Height="20" VerticalAlignment="Top">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*" />
+					<RowDefinition Height="*" />
+					<RowDefinition Height="*" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="2*" />
+				</Grid.ColumnDefinitions>
+
+				<TextBlock Grid.Row="0" Text="Popularity: " FontSize="16" Padding="10" />
+				<TextBlock Grid.Row="1" Text="Child-Friendliness: " FontSize="16" Padding="10" />
+				<TextBlock Grid.Row="2" Text="Tour Creator: " FontSize="16" Padding="10" />
+				<TextBlock Grid.Row="3" Text="Created on: " FontSize="16" Padding="10" />
+
+				<!-- <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding AttributePopularity}" FontSize="16" Padding="10" /> -->
+				<ProgressBar Grid.Row="0" Grid.Column="1" Minimum="0" Maximum="5" Value="{Binding AttributePopularity}" FontSize="16" Margin="10" />
+				<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding AttributeChildFriendliness}" FontSize="16" Padding="10" />
+				<TextBlock Grid.Row="2" Grid.Column="1" Text="Anonymous (User Management to be added)" FontSize="16" Padding="10" />
+				<TextBlock Grid.Row="3" Grid.Column="1" Text="Unknown Date (User Management to be added)" FontSize="16" Padding="10" />
+			</Grid>
 		</TabItem>
 	</TabControl>
 </UserControl>

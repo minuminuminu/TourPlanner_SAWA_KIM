@@ -22,21 +22,39 @@
 			<TextBlock Text="Tour Logs" VerticalAlignment="Center" Margin="5,0,0,0" Grid.ColumnSpan="2" />
 
 			<StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
-				<Button Content="+" VerticalAlignment="Center" />
-				<Button Content="-" VerticalAlignment="Center" />
-				<Button Content="..." VerticalAlignment="Center" />
+				<Button Content="+" VerticalAlignment="Center" Command="{Binding AddTourLogCommand}" Padding="2" FontWeight="Bold" />
+				<Button Content="-" VerticalAlignment="Center" Command="{Binding RemoveTourLogCommand}" Padding="2" FontWeight="Bold" />
+				<Button Content="..." VerticalAlignment="Center" Command="{Binding ModifyTourLogCommand}" Padding="2" FontWeight="Bold" />
 			</StackPanel>
 		</Grid>
 
 		<!-- TOUR LOG LISTVIEW -->
-		<ListView Grid.Row="1" Name="TourList">
-			<ListView.View>
-				<GridView>
-					<GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date}" Width="100" />
-					<GridViewColumn Header="Duration" DisplayMemberBinding="{Binding Duration}" Width="100" />
-					<GridViewColumn Header="Distance" DisplayMemberBinding="{Binding Distance}" Width="100" />
-				</GridView>
-			</ListView.View>
-		</ListView>
+		<ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+			<ListView Name="TourList" ItemsSource="{Binding TourLogs}" SelectedItem="{Binding SelectedTourLog, Mode=TwoWay}">
+				<ListView.View>
+					<GridView>
+						<GridViewColumn Header="Rating" Width="50">
+							<GridViewColumn.CellTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Rating, StringFormat={}{0}/5}" />
+								</DataTemplate>
+							</GridViewColumn.CellTemplate>
+						</GridViewColumn>
+
+						<GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date}" Width="150" />
+						<GridViewColumn Header="Duration" DisplayMemberBinding="{Binding Duration}" Width="100" />
+						<GridViewColumn Header="Distance" DisplayMemberBinding="{Binding Distance}" Width="100" />
+						<GridViewColumn Header="Difficulty" DisplayMemberBinding="{Binding Difficulty}" Width="100" />
+						<GridViewColumn Header="Comment" Width="250">
+							<GridViewColumn.CellTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Comment}" TextWrapping="Wrap" />
+								</DataTemplate>
+							</GridViewColumn.CellTemplate>
+						</GridViewColumn>
+					</GridView>
+				</ListView.View>
+			</ListView>
+		</ScrollViewer>
 	</Grid>
 </UserControl>

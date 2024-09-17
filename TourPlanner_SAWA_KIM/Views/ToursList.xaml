@@ -22,9 +22,9 @@
 			<TextBlock Text="Tours" VerticalAlignment="Center" Margin="5,0,0,0" />
 
 			<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-				<Button Content="+" VerticalAlignment="Center" Command="{Binding AddTourCommand}" />
-				<Button Content="-" VerticalAlignment="Center" Command="{Binding RemoveTourCommand}" />
-				<Button Content="..." VerticalAlignment="Center" Command="{Binding ModifyTourCommand}" />
+				<Button Content="+" VerticalAlignment="Center" Command="{Binding AddTourCommand}" Padding="2" FontWeight="Bold" />
+				<Button Content="-" VerticalAlignment="Center" Command="{Binding RemoveTourCommand}" Padding="2" FontWeight="Bold" />
+				<Button Content="..." VerticalAlignment="Center" Command="{Binding ModifyTourCommand}" Padding="2" FontWeight="Bold" />
 			</StackPanel>
 		</Grid>
 

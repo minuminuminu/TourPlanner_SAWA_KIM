@@ -9,7 +9,7 @@ using TourPlanner_SAWA_KIM.Models;
 
 namespace TourPlanner_SAWA_KIM.ViewModels
 {
-    public class AddTourWindowViewModel : ViewModelBase
+    public class TourWindowViewModel : ViewModelBase
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -23,7 +23,7 @@ namespace TourPlanner_SAWA_KIM.ViewModels
 
         public Action CloseAction { get; set; }
 
-        public AddTourWindowViewModel(Tour existingTour = null)
+        public TourWindowViewModel(Tour existingTour = null)
         {
             ConfirmCommand = new RelayCommand(Confirm);
 
@@ -46,6 +46,12 @@ namespace TourPlanner_SAWA_KIM.ViewModels
                 string.IsNullOrWhiteSpace(TransportType))
             {
                 MessageBox.Show("Please fill in all fields!", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (Distance <= 0)
+            {
+                MessageBox.Show("Distance must be a positive number!", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

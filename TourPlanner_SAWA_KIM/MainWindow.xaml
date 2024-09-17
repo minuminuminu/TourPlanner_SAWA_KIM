@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TourPlanner_SAWA_KIM"
 		xmlns:views="clr-namespace:TourPlanner_SAWA_KIM.Views"
         mc:Ignorable="d"
-        Title="Tour Planner" Height="450" Width="800">
+        Title="Tour Planner" Height="500" Width="1050">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
@@ -51,7 +51,7 @@
 				<!-- RIGHT SIDE CONTENT -->
 				<Grid Grid.Column="1">
 					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
+						<RowDefinition Height="*" />
 						<RowDefinition Height="*" />
 					</Grid.RowDefinitions>
 

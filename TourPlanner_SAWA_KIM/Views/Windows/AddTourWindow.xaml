@@ -38,7 +38,7 @@
 			<TextBlock Text="Transport Type:" Grid.Row="4" Grid.Column="0" Margin="10" />
 			<TextBox Grid.Row="4" Grid.Column="1" Margin="10" Text="{Binding TransportType}" />
 
-			<TextBlock Text="Distance:" Grid.Row="5" Grid.Column="0" Margin="10" />
+			<TextBlock Text="Distance (in km):" Grid.Row="5" Grid.Column="0" Margin="10" />
 			<TextBox Grid.Row="5" Grid.Column="1" Margin="10" Text="{Binding Distance}" />
 
 			<TextBlock Text="Estimated Time (hh:mm:ss):" Grid.Row="6" Grid.Column="0" Margin="10" />

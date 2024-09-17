@@ -36,7 +36,7 @@ namespace TourPlanner_SAWA_KIM.ViewModels
                 {
                     _currentTour = value;
                     RaisePropertyChangedEvent(nameof(CurrentTour));
-                    _mediator?.Notify(this, "TourSelected"); // raise "TourSelected" event and pass tour as param
+                    _mediator?.Notify(this, "TourSelected"); // raise "TourSelected" event and pass tour as param"
                 }
             }
         }
@@ -50,40 +50,19 @@ namespace TourPlanner_SAWA_KIM.ViewModels
         {
             Tours = new ObservableCollection<Tour>();
 
-            AddTourCommand = new RelayCommand(AddTour);
-            RemoveTourCommand = new RelayCommand(RemoveTour);
-            ModifyTourCommand = new RelayCommand(ModifyTour);
+            AddTourCommand = new RelayCommand(async () => await AddTour());
+            RemoveTourCommand = new RelayCommand(async () => await RemoveTour());
+            ModifyTourCommand = new RelayCommand(async () => await ModifyTour());
 
             _tourService = tourService;
 
-            //LoadDummyTours();
-            LoadTours();
+            LoadTours(); 
         }
 
-        //private void AddTour()
-        //{
-        //    var addTourWindow = new AddTourWindow();
-        //    var addTourViewModel = new AddTourWindowViewModel();
-
-        //    addTourWindow.DataContext = addTourViewModel;
-        //    addTourViewModel.CloseAction = () => addTourWindow.Close();
-
-        //    if (addTourWindow.ShowDialog() == true)
-        //    {
-        //        var newTour = new Tour(addTourViewModel.Name, addTourViewModel.Description, addTourViewModel.From, addTourViewModel.To, addTourViewModel.TransportType)
-        //        {
-        //            Distance = addTourViewModel.Distance,
-        //            EstimatedTime = addTourViewModel.EstimatedTime
-        //        };
-
-        //        Tours.Add(newTour);
-        //    }
-        //}
-
-        private async void AddTour()
+        private async Task AddTour()
         {
             var addTourWindow = new AddTourWindow();
-            var addTourViewModel = new AddTourWindowViewModel();
+            var addTourViewModel = new TourWindowViewModel();
 
             addTourWindow.DataContext = addTourViewModel;
             addTourViewModel.CloseAction = () => addTourWindow.Close();
@@ -103,26 +82,12 @@ namespace TourPlanner_SAWA_KIM.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    System.Windows.MessageBox.Show($"Failed to add tour: {ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                 }
             }
         }
 
-        //private void RemoveTour()
-        //{
-        //    if(CurrentTour == null)
-        //    {
-        //        MessageBox.Show("Select a Tour to delete first!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //    } 
-        //    else
-        //    {
-        //        Tours.Remove(CurrentTour);
-        //        CurrentTour = null;
-        //        _mediator?.Notify(this, "TourRemoved");
-        //    }
-        //}
-
-        private async void RemoveTour()
+        private async Task RemoveTour()
         {
             if (CurrentTour == null)
             {
@@ -144,20 +109,7 @@ namespace TourPlanner_SAWA_KIM.ViewModels
             }
         }
 
-        //private void ModifyTour()
-        //{
-        //    if (CurrentTour == null)
-        //    {
-        //        MessageBox.Show("Select a Tour to modify!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //    }
-        //    else
-        //    {
-
-        //        _mediator?.Notify(CurrentTour, "TourModified");
-        //    }
-        //}
-
-        private async void ModifyTour()
+        private async Task ModifyTour()
         {
             if (CurrentTour == null)
             {
@@ -166,7 +118,7 @@ namespace TourPlanner_SAWA_KIM.ViewModels
             else
             {
                 var modifyTourWindow = new AddTourWindow();
-                var modifyTourViewModel = new AddTourWindowViewModel(CurrentTour);
+                var modifyTourViewModel = new TourWindowViewModel(CurrentTour);
 
                 modifyTourWindow.DataContext = modifyTourViewModel;
                 modifyTourViewModel.CloseAction = () => modifyTourWindow.Close();
@@ -184,12 +136,10 @@ namespace TourPlanner_SAWA_KIM.ViewModels
                     try
                     {
                         await _tourService.UpdateTourAsync(CurrentTour);
-
-                        RaisePropertyChangedEvent(nameof(CurrentTour));
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex.Message);
+                        System.Windows.MessageBox.Show($"Failed to update tour: {ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                     }
                 }
             }

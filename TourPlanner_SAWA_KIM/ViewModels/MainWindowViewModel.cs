@@ -22,10 +22,10 @@ namespace TourPlanner_SAWA_KIM.ViewModels
         {
             ToursListViewModel = new ToursListViewModel(tourService);
             ToursOverviewViewModel = new ToursOverviewViewModel();
-            ToursLogsViewModel = new ToursLogsViewModel();
+            ToursLogsViewModel = new ToursLogsViewModel(tourService);
             SearchBarViewModel = new SearchBarViewModel();
 
-            var mediator = new TourMediator(ToursListViewModel, ToursOverviewViewModel);
+            var mediator = new TourMediator(ToursListViewModel, ToursOverviewViewModel, ToursLogsViewModel);
             _tourService = tourService;
         }
     }

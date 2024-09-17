@@ -27,6 +27,7 @@ namespace TourPlanner_SAWA_KIM
 
             try
             {
+                //dbContext.Database.EnsureDeleted();
                 dbContext.Database.EnsureCreated();
             }
             catch (Exception ex)
@@ -35,7 +36,9 @@ namespace TourPlanner_SAWA_KIM
             }
 
             ITourRepository tourRepository = new TourRepository(dbContext);
-            var tourService = new TourService(tourRepository);
+            ITourLogRepository tourLogRepository = new TourLogRepository(dbContext);
+
+            var tourService = new TourService(tourRepository, tourLogRepository);
             var mainWindowViewModel = new MainWindowViewModel(tourService);
             var mainWindow = new MainWindow();
             mainWindow.DataContext = mainWindowViewModel;
