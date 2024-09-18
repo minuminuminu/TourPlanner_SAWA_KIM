@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TourPlanner_SAWA_KIM", "Tou
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TourPlanner_SAWA_KIM.Models", "Models\TourPlanner_SAWA_KIM.Models.csproj", "{849E075D-9C55-410C-8983-161372BC508D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TourPlanner_SAWA_KIM.DAL", "TourPlanner_SAWA_KIM.DAL\TourPlanner_SAWA_KIM.DAL.csproj", "{38AEEFEB-AD88-4BBC-9692-7ED6DCF3058A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TourPlanner_SAWA_KIM.DAL", "TourPlanner_SAWA_KIM.DAL\TourPlanner_SAWA_KIM.DAL.csproj", "{38AEEFEB-AD88-4BBC-9692-7ED6DCF3058A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TourPlanner_SAWA_KIM.BLL", "TourPlanner_SAWA_KIM.BLL\TourPlanner_SAWA_KIM.BLL.csproj", "{946EEF32-4A57-404E-B2CC-F2A55BEBB648}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TourPlanner_SAWA_KIM.BLL", "TourPlanner_SAWA_KIM.BLL\TourPlanner_SAWA_KIM.BLL.csproj", "{946EEF32-4A57-404E-B2CC-F2A55BEBB648}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TourPlanner_SAWA_KIM.Exceptions", "TourPlanner_SAWA_KIM.Exceptions\TourPlanner_SAWA_KIM.Exceptions.csproj", "{D0DFF0AC-6886-41A2-92C4-C3A18BAA63AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{946EEF32-4A57-404E-B2CC-F2A55BEBB648}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{946EEF32-4A57-404E-B2CC-F2A55BEBB648}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{946EEF32-4A57-404E-B2CC-F2A55BEBB648}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0DFF0AC-6886-41A2-92C4-C3A18BAA63AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0DFF0AC-6886-41A2-92C4-C3A18BAA63AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0DFF0AC-6886-41A2-92C4-C3A18BAA63AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0DFF0AC-6886-41A2-92C4-C3A18BAA63AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

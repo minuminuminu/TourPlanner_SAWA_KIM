@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TourPlanner_SAWA_KIM.Views.Windows"
         mc:Ignorable="d"
-        Title="Add New Tour" Height="350" Width="500" MinHeight="350" MinWidth="500">
+        Title="Add New Tour" Height="280" Width="500" MinHeight="250" MinWidth="500">
 	<ScrollViewer VerticalScrollBarVisibility="Auto">
 		<Grid>
 			<Grid.RowDefinitions>
@@ -15,8 +15,6 @@
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto" />
@@ -37,13 +35,13 @@
 
 			<TextBlock Text="Transport Type:" Grid.Row="4" Grid.Column="0" Margin="10" />
 			<TextBox Grid.Row="4" Grid.Column="1" Margin="10" Text="{Binding TransportType}" />
-
+<!--
 			<TextBlock Text="Distance (in km):" Grid.Row="5" Grid.Column="0" Margin="10" />
 			<TextBox Grid.Row="5" Grid.Column="1" Margin="10" Text="{Binding Distance}" />
 
 			<TextBlock Text="Estimated Time (hh:mm:ss):" Grid.Row="6" Grid.Column="0" Margin="10" />
 			<TextBox Grid.Row="6" Grid.Column="1" Margin="10" Text="{Binding EstimatedTime}" />
-
+-->
 			<StackPanel Grid.Row="7" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
 				<Button Content="OK" Width="75" Margin="5" Command="{Binding ConfirmCommand}" IsDefault="True" />
 				<Button Content="Cancel" Width="75" Margin="5" IsCancel="True" />

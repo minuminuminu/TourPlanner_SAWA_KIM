@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TourPlanner_SAWA_KIM.ViewModels;
+using Microsoft.Web.WebView2.Core;
 
 namespace TourPlanner_SAWA_KIM.Views
 {
@@ -24,6 +25,13 @@ namespace TourPlanner_SAWA_KIM.Views
         public ToursOverview()
         {
             InitializeComponent();
+            InitializeWebView2Async();
+        }
+
+        private async void InitializeWebView2Async()
+        {
+            await webView.EnsureCoreWebView2Async(null);
+            webView.CoreWebView2.Navigate("about:blank");
         }
     }
 }

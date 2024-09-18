@@ -44,7 +44,7 @@ namespace TourPlanner_SAWA_KIM.Mediators
             } else if(eventName == "TourLogsLoaded")
             {
                 _toursOverviewViewModel.ComputeAttributes(_toursLogsViewModel.TourLogs);
-            }
+            } 
         }
     }
 }

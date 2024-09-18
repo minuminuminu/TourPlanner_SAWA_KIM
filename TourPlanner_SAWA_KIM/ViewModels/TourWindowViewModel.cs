@@ -16,8 +16,6 @@ namespace TourPlanner_SAWA_KIM.ViewModels
         public string From { get; set; }
         public string To { get; set; }
         public string TransportType { get; set; }
-        public double Distance { get; set; }
-        public TimeSpan EstimatedTime { get; set; }
 
         public ICommand ConfirmCommand { get; }
 
@@ -34,8 +32,6 @@ namespace TourPlanner_SAWA_KIM.ViewModels
                 From = existingTour.From;
                 To = existingTour.To;
                 TransportType = existingTour.TransportType;
-                Distance = existingTour.Distance;
-                EstimatedTime = existingTour.EstimatedTime;
             }
         }
 
@@ -46,12 +42,6 @@ namespace TourPlanner_SAWA_KIM.ViewModels
                 string.IsNullOrWhiteSpace(TransportType))
             {
                 MessageBox.Show("Please fill in all fields!", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            if (Distance <= 0)
-            {
-                MessageBox.Show("Distance must be a positive number!", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
