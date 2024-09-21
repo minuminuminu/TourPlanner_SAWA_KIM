@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -80,10 +81,57 @@ namespace TourPlanner_SAWA_KIM.ViewModels
 
                     _mediator?.Notify(this, "TourLogsLoaded");
                 }
+                catch (DbUpdateException dbEx)
+                {
+                    // This handles database update-specific exceptions
+                    var detailedError = new StringBuilder();
+                    detailedError.AppendLine($"Failed to add tour log: {dbEx.Message}");
+
+                    // Include inner exception details if available
+                    if (dbEx.InnerException != null)
+                    {
+                        detailedError.AppendLine($"Inner Exception: {dbEx.InnerException.Message}");
+                        if (dbEx.InnerException.InnerException != null)
+                        {
+                            detailedError.AppendLine($"Inner Inner Exception: {dbEx.InnerException.InnerException.Message}");
+                        }
+                    }
+
+                    detailedError.AppendLine($"Stack Trace: {dbEx.StackTrace}");
+
+                    System.Windows.MessageBox.Show(detailedError.ToString(), "Database Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                }
                 catch (Exception ex)
                 {
-                    System.Windows.MessageBox.Show($"Failed to add tour log: {ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                    // General exception handling
+                    var detailedError = new StringBuilder();
+                    detailedError.AppendLine($"An unexpected error occurred: {ex.Message}");
+
+                    // Include inner exception details if available
+                    if (ex.InnerException != null)
+                    {
+                        detailedError.AppendLine($"Inner Exception: {ex.InnerException.Message}");
+                    }
+
+                    detailedError.AppendLine($"Stack Trace: {ex.StackTrace}");
+
+                    System.Windows.MessageBox.Show(detailedError.ToString(), "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                 }
+            }
+        }
+
+        public async Task AddImportedTourLogs(IEnumerable<TourLog> tourLogs)
+        {
+            try
+            {
+                foreach (var tourLog in tourLogs)
+                {
+                    var addedLog = await _tourService.AddTourLogAsync(tourLog);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Failed to add imported tour logs: {ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
         }
 

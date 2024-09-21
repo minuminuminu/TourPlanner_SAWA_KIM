@@ -11,7 +11,7 @@
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="Auto" />
 		</Grid.ColumnDefinitions>
-		<TextBox />
-		<Button Grid.Column="1" Content="Search" Width="80" />
+		<TextBox Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}" />
+		<Button Grid.Column="1" Content="Search" Width="80" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}" />
 	</Grid>
 </UserControl>

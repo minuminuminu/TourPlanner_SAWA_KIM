@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TourPlanner_SAWA_KIM.Views.Windows"
         mc:Ignorable="d"
-        Title="Add New Tour" Height="350" Width="500" MinHeight="350" MinWidth="500">
-	<ScrollViewer VerticalScrollBarVisibility="Auto">
+        Title="Add New Tour" Height="280" Width="500" MinHeight="250" MinWidth="500">
+	<ScrollViewer VerticalScrollBarVisibility="Auto" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}">
 		<Grid>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
@@ -15,8 +15,6 @@
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto" />
@@ -30,23 +28,25 @@
 			<TextBox Grid.Row="1" Grid.Column="1" Margin="10" Text="{Binding Description}" />
 
 			<TextBlock Text="From:" Grid.Row="2" Grid.Column="0" Margin="10" />
-			<TextBox Grid.Row="2" Grid.Column="1" Margin="10" Text="{Binding From}" />
-
+			<TextBox Grid.Row="2" Grid.Column="1" Margin="10" Text="{Binding From}">
+				<TextBox.ToolTip>
+					<ToolTip Content="Enter a valid place! Options range from streetname, country, county, district code, etc., the more detailed, the better." />
+				</TextBox.ToolTip>
+			</TextBox>
+			
 			<TextBlock Text="To:" Grid.Row="3" Grid.Column="0" Margin="10" />
-			<TextBox Grid.Row="3" Grid.Column="1" Margin="10" Text="{Binding To}" />
+			<TextBox Grid.Row="3" Grid.Column="1" Margin="10" Text="{Binding To}">
+				<TextBox.ToolTip>
+					<ToolTip Content="Enter a valid place! Options range from streetname, country, county, district code, etc., the more detailed, the better." />
+				</TextBox.ToolTip>
+			</TextBox>
 
 			<TextBlock Text="Transport Type:" Grid.Row="4" Grid.Column="0" Margin="10" />
-			<TextBox Grid.Row="4" Grid.Column="1" Margin="10" Text="{Binding TransportType}" />
-
-			<TextBlock Text="Distance (in km):" Grid.Row="5" Grid.Column="0" Margin="10" />
-			<TextBox Grid.Row="5" Grid.Column="1" Margin="10" Text="{Binding Distance}" />
-
-			<TextBlock Text="Estimated Time (hh:mm:ss):" Grid.Row="6" Grid.Column="0" Margin="10" />
-			<TextBox Grid.Row="6" Grid.Column="1" Margin="10" Text="{Binding EstimatedTime}" />
+			<ComboBox Grid.Row="4" Grid.Column="1" Margin="10" ItemsSource="{Binding TransportTypes}" SelectedItem="{Binding TransportType}" />
 
 			<StackPanel Grid.Row="7" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
-				<Button Content="OK" Width="75" Margin="5" Command="{Binding ConfirmCommand}" IsDefault="True" />
-				<Button Content="Cancel" Width="75" Margin="5" IsCancel="True" />
+				<Button Content="OK" Width="75" Margin="5" Command="{Binding ConfirmCommand}" IsDefault="True" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}" />
+				<Button Content="Cancel" Width="75" Margin="5" IsCancel="True" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}" />
 			</StackPanel>
 		</Grid>
 	</ScrollViewer>

@@ -3,13 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+			 xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
              xmlns:local="clr-namespace:TourPlanner_SAWA_KIM.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 	<TabControl>
 		<!-- General Tab -->
 		<TabItem Header="General">
-			<ScrollViewer VerticalScrollBarVisibility="Auto">
+			<ScrollViewer VerticalScrollBarVisibility="Auto" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}">
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
@@ -42,47 +43,50 @@
 					<TextBlock Text="{Binding SelectedTour.TransportType}" Grid.Row="4" Grid.Column="1" Margin="5" />
 
 					<TextBlock Text="Tour Distance:" FontWeight="Bold" Grid.Row="5" Grid.Column="0" Margin="5" />
-					<TextBlock Text="{Binding SelectedTour.Distance}" Grid.Row="5" Grid.Column="1" Margin="5" />
+					<TextBlock Text="{Binding SelectedTour.Distance, StringFormat={}{0:F2} km}" Grid.Row="5" Grid.Column="1" Margin="5" />
 
 					<TextBlock Text="Estimated Time:" FontWeight="Bold" Grid.Row="6" Grid.Column="0" Margin="5" />
-					<TextBlock Text="{Binding SelectedTour.EstimatedTime}" Grid.Row="6" Grid.Column="1" Margin="5" />
+					<TextBlock Text="{Binding SelectedTour.EstimatedTime, StringFormat={}{0:hh\\:mm\\:ss}}" Grid.Row="6" Grid.Column="1" Margin="5" />
 				</Grid>
 			</ScrollViewer>
 		</TabItem>
 
 		<!-- Route Tab -->
 		<TabItem Header="Route">
-			<StackPanel>
-				<TextBlock Text="Route Image tbd" FontSize="16" Padding="10" />
-			</StackPanel>
+			<Grid>
+				<!--<wpf:WebView2 x:Name="webView" Source="about:blank" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+-->
+			</Grid>
 		</TabItem>
 
 		<!-- Misc Tab -->
 		<TabItem Header="Misc" Height="20" VerticalAlignment="Top">
-			<Grid>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="*" />
-					<RowDefinition Height="*" />
-					<RowDefinition Height="*" />
-					<RowDefinition Height="*" />
-				</Grid.RowDefinitions>
+			<ScrollViewer VerticalScrollBarVisibility="Auto" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*" />
+						<RowDefinition Height="*" />
+						<RowDefinition Height="*" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
 
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="2*" />
-				</Grid.ColumnDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="2*" />
+					</Grid.ColumnDefinitions>
 
-				<TextBlock Grid.Row="0" Text="Popularity: " FontSize="16" Padding="10" />
-				<TextBlock Grid.Row="1" Text="Child-Friendliness: " FontSize="16" Padding="10" />
-				<TextBlock Grid.Row="2" Text="Tour Creator: " FontSize="16" Padding="10" />
-				<TextBlock Grid.Row="3" Text="Created on: " FontSize="16" Padding="10" />
+					<TextBlock Grid.Row="0" Text="Popularity: " FontSize="16" Padding="10" />
+					<TextBlock Grid.Row="1" Text="Child-Friendliness: " FontSize="16" Padding="10" />
+					<TextBlock Grid.Row="2" Text="Tour Creator: " FontSize="16" Padding="10" />
+					<TextBlock Grid.Row="3" Text="Created on: " FontSize="16" Padding="10" />
 
-				<!-- <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding AttributePopularity}" FontSize="16" Padding="10" /> -->
-				<ProgressBar Grid.Row="0" Grid.Column="1" Minimum="0" Maximum="5" Value="{Binding AttributePopularity}" FontSize="16" Margin="10" />
-				<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding AttributeChildFriendliness}" FontSize="16" Padding="10" />
-				<TextBlock Grid.Row="2" Grid.Column="1" Text="Anonymous (User Management to be added)" FontSize="16" Padding="10" />
-				<TextBlock Grid.Row="3" Grid.Column="1" Text="Unknown Date (User Management to be added)" FontSize="16" Padding="10" />
-			</Grid>
+					<!-- <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding AttributePopularity}" FontSize="16" Padding="10" /> -->
+					<ProgressBar Grid.Row="0" Grid.Column="1" Minimum="0" Maximum="5" Value="{Binding AttributePopularity}" FontSize="16" Margin="10" />
+					<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding AttributeChildFriendliness}" FontSize="16" Padding="10" />
+					<TextBlock Grid.Row="2" Grid.Column="1" Text="Anonymous (User Management to be added)" FontSize="16" Padding="10" />
+					<TextBlock Grid.Row="3" Grid.Column="1" Text="Unknown Date (User Management to be added)" FontSize="16" Padding="10" />
+				</Grid>
+			</ScrollViewer>
 		</TabItem>
 	</TabControl>
 </UserControl>

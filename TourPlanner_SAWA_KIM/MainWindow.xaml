@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TourPlanner_SAWA_KIM"
 		xmlns:views="clr-namespace:TourPlanner_SAWA_KIM.Views"
+		Background="{DynamicResource WindowBackgroundBrush}"
+		Foreground="{DynamicResource ForegroundBrush}"
         mc:Ignorable="d"
         Title="Tour Planner" Height="500" Width="1050">
 	<Grid>
@@ -15,27 +17,27 @@
 		</Grid.RowDefinitions>
 
 		<!-- MENU BAR -->
-		<Menu Grid.Row="0">
+		<Menu Grid.Row="0" DataContext="{Binding MenuViewModel}" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}">
 			<MenuItem Header="File">
-				<MenuItem Header="New" />
-				<MenuItem Header="Open" />
-				<MenuItem Header="Save" />
+				<MenuItem Header="Generate Tour-Report" Command="{Binding GenTourReport}" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}"/>
+				<MenuItem Header="Generate Summary-Report" Command="{Binding GenSummaryReport}" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}"/>
 				<Separator />
-				<MenuItem Header="Exit" />
+				<MenuItem Header="Exit" Command="{Binding ExitProgram}" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}"/>
 			</MenuItem>
 			<MenuItem Header="Edit">
-				<MenuItem Header="Cut" />
-				<MenuItem Header="Copy" />
-				<MenuItem Header="Paste" />
+				<MenuItem Header="Import Tour" Command="{Binding ImportTour}" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}"/>
+				<MenuItem Header="Export Tour" Command="{Binding ExportTour}" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}"/>
 			</MenuItem>
-			<MenuItem Header="Options" />
+			<MenuItem Header="Options">
+				<MenuItem Header="Toggle Darkmode" Command="{Binding ToggleDarkMode}" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}" />
+			</MenuItem>
 			<MenuItem Header="Help">
-				<MenuItem Header="About" />
+				<MenuItem Header="About" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}" />
 			</MenuItem>
 		</Menu>
 
 		<!-- SEARCH BAR -->
-		<views:SearchBar Grid.Row="1" x:Name="SearchBar" DataContext="{Binding SearchBarViewModel}" />
+		<views:SearchBar Grid.Row="1" x:Name="SearchBar" DataContext="{Binding SearchBarViewModel}" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}" />
 
 		<!-- Main content area -->
 		<Grid Grid.Row="2">
@@ -46,7 +48,7 @@
 				</Grid.ColumnDefinitions>
 
 				<!-- LEFT SIDE CONTENT -->
-				<views:ToursList Grid.Column="0" x:Name="ToursList" DataContext="{Binding ToursListViewModel}" />
+				<views:ToursList Grid.Column="0" x:Name="ToursList" DataContext="{Binding ToursListViewModel}" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}" />
 
 				<!-- RIGHT SIDE CONTENT -->
 				<Grid Grid.Column="1">
@@ -56,10 +58,10 @@
 					</Grid.RowDefinitions>
 
 					<!-- TOUR GENERAL/ROUTE/MISC TABS -->
-					<views:ToursOverview x:Name="ToursOverview" DataContext="{Binding ToursOverviewViewModel}" />
+					<views:ToursOverview x:Name="ToursOverview" DataContext="{Binding ToursOverviewViewModel}" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}" />
 
 					<!-- TOURS LOGS -->
-					<views:ToursLogs Grid.Row="1" x:Name="ToursLogs" DataContext="{Binding ToursLogsViewModel}" />
+					<views:ToursLogs Grid.Row="1" x:Name="ToursLogs" DataContext="{Binding ToursLogsViewModel}" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}" />
 				</Grid>
 			</Grid>
 		</Grid>

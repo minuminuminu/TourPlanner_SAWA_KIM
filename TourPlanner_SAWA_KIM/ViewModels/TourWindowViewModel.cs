@@ -16,8 +16,7 @@ namespace TourPlanner_SAWA_KIM.ViewModels
         public string From { get; set; }
         public string To { get; set; }
         public string TransportType { get; set; }
-        public double Distance { get; set; }
-        public TimeSpan EstimatedTime { get; set; }
+        public List<string> TransportTypes { get; set; }
 
         public ICommand ConfirmCommand { get; }
 
@@ -26,6 +25,18 @@ namespace TourPlanner_SAWA_KIM.ViewModels
         public TourWindowViewModel(Tour existingTour = null)
         {
             ConfirmCommand = new RelayCommand(Confirm);
+            TransportTypes = new List<string>
+            {
+                "driving-car",
+                "driving-hgv",
+                "cycling-regular",
+                "cycling-road",
+                "cycling-mountain",
+                "cycling-electric",
+                "foot-walking",
+                "foot-hiking",
+                "wheelchair"
+            };
 
             if (existingTour != null) // if window gets created modify existing tour
             {
@@ -34,8 +45,6 @@ namespace TourPlanner_SAWA_KIM.ViewModels
                 From = existingTour.From;
                 To = existingTour.To;
                 TransportType = existingTour.TransportType;
-                Distance = existingTour.Distance;
-                EstimatedTime = existingTour.EstimatedTime;
             }
         }
 
@@ -46,12 +55,6 @@ namespace TourPlanner_SAWA_KIM.ViewModels
                 string.IsNullOrWhiteSpace(TransportType))
             {
                 MessageBox.Show("Please fill in all fields!", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            if (Distance <= 0)
-            {
-                MessageBox.Show("Distance must be a positive number!", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

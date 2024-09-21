@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace TourPlanner_SAWA_KIM.Models
@@ -18,7 +19,10 @@ namespace TourPlanner_SAWA_KIM.Models
         private string _comment;
 
         public int TourId { get; set; }
+
+        [JsonIgnore]
         public Tour Tour { get; set; }
+        [JsonIgnore]
         public int Id { get; set; }
 
         public int Rating

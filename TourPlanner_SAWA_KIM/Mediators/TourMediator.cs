@@ -11,12 +11,16 @@ namespace TourPlanner_SAWA_KIM.Mediators
     // https://refactoring.guru/design-patterns/mediator/csharp/example
     public class TourMediator : IMediator
     {
+        private readonly MenuViewModel _menuViewModel;
         private readonly ToursListViewModel _toursListViewModel;
         private readonly ToursOverviewViewModel _toursOverviewViewModel;
         private readonly ToursLogsViewModel _toursLogsViewModel;
 
-        public TourMediator(ToursListViewModel toursListViewModel, ToursOverviewViewModel tourOverviewViewModel, ToursLogsViewModel toursLogsViewModel)
+        public TourMediator(MenuViewModel menuViewModel, ToursListViewModel toursListViewModel, ToursOverviewViewModel tourOverviewViewModel, ToursLogsViewModel toursLogsViewModel)
         {
+            _menuViewModel = menuViewModel;
+            _menuViewModel.SetMediator(this);
+
             _toursListViewModel = toursListViewModel;
             _toursListViewModel.SetMediator(this);
 
@@ -36,14 +40,20 @@ namespace TourPlanner_SAWA_KIM.Mediators
                 _toursOverviewViewModel.UpdateTourDetails(selectedTour); // tell right side 
                 await _toursLogsViewModel.LoadTourLogsAsync(selectedTour.Id); // load tour logs for specific tour
                 _toursLogsViewModel.SetSelectedTour(selectedTour); // set selected tour in logs
+                _menuViewModel.SetSelectedTour(selectedTour); // set selected tour for import/export
             } else if(eventName == "TourRemoved")
             {
-                _toursOverviewViewModel.ComputeAttributes(_toursLogsViewModel.TourLogs);
                 _toursOverviewViewModel.ClearTourDetails();
                 _toursLogsViewModel.ClearTourLogs();
+                _menuViewModel.SetSelectedTour(null);
+                _toursOverviewViewModel.ComputeAttributes(_toursLogsViewModel.TourLogs);
             } else if(eventName == "TourLogsLoaded")
             {
                 _toursOverviewViewModel.ComputeAttributes(_toursLogsViewModel.TourLogs);
+            } else if(eventName == "TourImported")
+            {
+                _toursListViewModel.AddTour(_menuViewModel.ImportedTour);
+                await _toursLogsViewModel.AddImportedTourLogs(_menuViewModel.ImportedTour.ImportedTourLogsList);
             }
         }
     }

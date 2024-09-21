@@ -19,16 +19,16 @@
 				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
 
-			<TextBlock Text="Tours" VerticalAlignment="Center" Margin="5,0,0,0" />
+			<TextBlock Text="Tours" VerticalAlignment="Center" Margin="5,0,0,0" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}" />
 
 			<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-				<Button Content="+" VerticalAlignment="Center" Command="{Binding AddTourCommand}" Padding="2" FontWeight="Bold" />
-				<Button Content="-" VerticalAlignment="Center" Command="{Binding RemoveTourCommand}" Padding="2" FontWeight="Bold" />
-				<Button Content="..." VerticalAlignment="Center" Command="{Binding ModifyTourCommand}" Padding="2" FontWeight="Bold" />
+				<Button Content="+" VerticalAlignment="Center" Command="{Binding AddTourCommand}" Padding="2" FontWeight="Bold" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}" />
+				<Button Content="-" VerticalAlignment="Center" Command="{Binding RemoveTourCommand}" Padding="2" FontWeight="Bold" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}" />
+				<Button Content="..." VerticalAlignment="Center" Command="{Binding ModifyTourCommand}" Padding="2" FontWeight="Bold" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}" />
 			</StackPanel>
 		</Grid>
 
 		<!-- TOURS LISTBOX -->
-		<ListBox Grid.Row="1" Name="ToursListBox" ItemsSource="{Binding Tours}" DisplayMemberPath="Name" SelectedItem="{Binding CurrentTour}" />
+		<ListBox Grid.Row="1" Name="ToursListBox" ItemsSource="{Binding Tours}" DisplayMemberPath="Name" SelectedItem="{Binding CurrentTour}" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}" />
 	</Grid>
 </UserControl>

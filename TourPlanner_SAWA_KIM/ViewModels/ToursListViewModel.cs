@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using TourPlanner_SAWA_KIM.BLL;
+using TourPlanner_SAWA_KIM.Exceptions;
 using TourPlanner_SAWA_KIM.Mediators;
 using TourPlanner_SAWA_KIM.Models;
 using TourPlanner_SAWA_KIM.Views.Windows;
@@ -59,6 +60,11 @@ namespace TourPlanner_SAWA_KIM.ViewModels
             LoadTours(); 
         }
 
+        public void AddTour(Tour tour)
+        {
+            Tours.Add(tour);
+        }
+
         private async Task AddTour()
         {
             var addTourWindow = new AddTourWindow();
@@ -69,16 +75,20 @@ namespace TourPlanner_SAWA_KIM.ViewModels
 
             if (addTourWindow.ShowDialog() == true)
             {
-                var newTour = new Tour(addTourViewModel.Name, addTourViewModel.Description, addTourViewModel.From, addTourViewModel.To, addTourViewModel.TransportType)
-                {
-                    Distance = addTourViewModel.Distance,
-                    EstimatedTime = addTourViewModel.EstimatedTime
-                };
+                var newTour = new Tour(addTourViewModel.Name, addTourViewModel.Description, addTourViewModel.From, addTourViewModel.To, addTourViewModel.TransportType);
 
                 try
                 {
-                    var addedTour = await _tourService.AddTourAsync(newTour);
+                    var addedTour = await _tourService.AddTourAndGeoCodesAsync(newTour);
                     Tours.Add(addedTour);
+                }
+                catch (FailedToRetrieveCoordinatesException)
+                {
+                    System.Windows.MessageBox.Show($"Failed to find locations", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                }
+                catch (FailedToRetrieveRouteException)
+                {
+                    System.Windows.MessageBox.Show($"Failed to create route", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                 }
                 catch (Exception ex)
                 {
@@ -130,8 +140,6 @@ namespace TourPlanner_SAWA_KIM.ViewModels
                     CurrentTour.From = modifyTourViewModel.From;
                     CurrentTour.To = modifyTourViewModel.To;
                     CurrentTour.TransportType = modifyTourViewModel.TransportType;
-                    CurrentTour.Distance = modifyTourViewModel.Distance;
-                    CurrentTour.EstimatedTime = modifyTourViewModel.EstimatedTime;
 
                     try
                     {

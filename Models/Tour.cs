@@ -1,22 +1,36 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 
 namespace TourPlanner_SAWA_KIM.Models
 {
     public class Tour : INotifyPropertyChanged
     {
+        [JsonIgnore]
+        public int Id { get; set; }
+
         private string _name;
         private string _description;
         private string _from;
         private string _to;
         private string _transportType;
+
+        private double _fromLatitude;
+        private double _fromLongitude;
+
+        private double _toLatitude;
+        private double _toLongitude;
+
         private double _distance;
         private TimeSpan _estimatedTime;
-        private string _routeImage = string.Empty;
 
-        public int Id { get; set; }
+        [JsonIgnore] // dont save in imports/exports
         public ICollection<TourLog> TourLogs { get; set; }
+
+        [NotMapped] // dont save in db, only need for imports/exports
+        public IEnumerable<TourLog> ImportedTourLogsList { get; set; }
 
         public string Name
         {
@@ -109,20 +123,58 @@ namespace TourPlanner_SAWA_KIM.Models
             }
         }
 
-        public string RouteImage
+        public double FromLatitude
         {
-            get => _routeImage;
+            get => _fromLatitude;
             set
             {
-                if (_routeImage != value)
+                if (_fromLatitude != value)
                 {
-                    _routeImage = value;
-                    OnPropertyChanged(nameof(RouteImage));
+                    _fromLatitude = value;
+                    OnPropertyChanged(nameof(FromLatitude));
                 }
             }
         }
 
-        // Constructor initializing essential properties
+        public double FromLongitude
+        {
+            get => _fromLongitude;
+            set
+            {
+                if (_fromLongitude != value)
+                {
+                    _fromLongitude = value;
+                    OnPropertyChanged(nameof(FromLongitude));
+                }
+            }
+        }
+
+        public double ToLatitude
+        {
+            get => _toLatitude;
+            set
+            {
+                if (_toLatitude != value)
+                {
+                    _toLatitude = value;
+                    OnPropertyChanged(nameof(ToLatitude));
+                }
+            }
+        }
+
+        public double ToLongitude
+        {
+            get => _toLongitude;
+            set
+            {
+                if (_toLongitude != value)
+                {
+                    _toLongitude = value;
+                    OnPropertyChanged(nameof(ToLongitude));
+                }
+            }
+        }
+
         public Tour(string name, string description, string from, string to, string transportType)
         {
             _name = name;
@@ -131,9 +183,6 @@ namespace TourPlanner_SAWA_KIM.Models
             _to = to;
             _transportType = transportType;
         }
-
-        // Parameterless constructor for ORM and serialization purposes
-        public Tour() { }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

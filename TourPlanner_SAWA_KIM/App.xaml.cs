@@ -6,6 +6,7 @@ using TourPlanner_SAWA_KIM.ViewModels;
 using TourPlanner_SAWA_KIM.DAL;
 using TourPlanner_SAWA_KIM.BLL;
 using Microsoft.Extensions.Configuration.Json;
+using System.Net.Http;
 
 
 namespace TourPlanner_SAWA_KIM
@@ -23,7 +24,10 @@ namespace TourPlanner_SAWA_KIM
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
 
+            HttpClient httpClient = new HttpClient();
+
             var dbContext = new AppDbContext(configuration);
+            var apiClient = new ApiClient(httpClient, configuration);
 
             try
             {
@@ -38,8 +42,10 @@ namespace TourPlanner_SAWA_KIM
             ITourRepository tourRepository = new TourRepository(dbContext);
             ITourLogRepository tourLogRepository = new TourLogRepository(dbContext);
 
-            var tourService = new TourService(tourRepository, tourLogRepository);
-            var mainWindowViewModel = new MainWindowViewModel(tourService);
+            var tourService = new TourService(tourRepository, tourLogRepository, apiClient);
+            var pdfService = new PDFService();
+
+            var mainWindowViewModel = new MainWindowViewModel(tourService, pdfService);
             var mainWindow = new MainWindow();
             mainWindow.DataContext = mainWindowViewModel;
 

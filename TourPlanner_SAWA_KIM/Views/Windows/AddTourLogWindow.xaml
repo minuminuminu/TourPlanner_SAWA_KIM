@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Add Tour Log" Height="350" Width="500" MinHeight="350" MinWidth="500">
     <Grid>
-		<ScrollViewer VerticalScrollBarVisibility="Auto">
+		<ScrollViewer VerticalScrollBarVisibility="Auto" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}">
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
@@ -46,8 +46,8 @@
 				<TextBox Grid.Row="5" Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="10" Text="{Binding Comment}" />
 
 				<StackPanel Grid.Row="7" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
-					<Button Content="OK" Width="75" Margin="5" Command="{Binding ConfirmCommand}" IsDefault="True" />
-					<Button Content="Cancel" Width="75" Margin="5" IsCancel="True" />
+					<Button Content="OK" Width="75" Margin="5" Command="{Binding ConfirmCommand}" IsDefault="True" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}" />
+					<Button Content="Cancel" Width="75" Margin="5" IsCancel="True" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}" />
 				</StackPanel>
 			</Grid>
 		</ScrollViewer>

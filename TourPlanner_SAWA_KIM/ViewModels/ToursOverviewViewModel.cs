@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,7 +66,7 @@ namespace TourPlanner_SAWA_KIM.ViewModels
             {
                 if (_childFriendliness != value)
                 {
-                    _childFriendliness = Math.Clamp(value, 1, 5);
+                    _childFriendliness = Math.Clamp(value, 0, 5);
                     RaisePropertyChangedEvent(nameof(ChildFriendliness));
                     RaisePropertyChangedEvent(nameof(AttributeChildFriendliness));
                 }
@@ -108,15 +109,15 @@ namespace TourPlanner_SAWA_KIM.ViewModels
 
         private int MapPopularity(int numberOfLogs)
         {
-            if (numberOfLogs >= 15)
+            if (numberOfLogs >= 9)
                 return 5;
-            else if (numberOfLogs >= 12)
+            else if (numberOfLogs >= 7)
                 return 4;
-            else if (numberOfLogs >= 9)
+            else if (numberOfLogs >= 5)
                 return 3;
-            else if (numberOfLogs >= 6)
-                return 2;
             else if (numberOfLogs >= 3)
+                return 2;
+            else if (numberOfLogs > 0)
                 return 1;
             else
                 return 0; // No logs, not popular
@@ -153,16 +154,16 @@ namespace TourPlanner_SAWA_KIM.ViewModels
         {
             return difficulty.ToLower() switch
             {
-                "Easy" => 5,
-                "Medium" => 3,
-                "Hard" => 1,
+                "easy" => 5,
+                "medium" => 3,
+                "hard" => 1,
                 _ => 3 // should never happen anyway
             };
         }
 
         private double MapDurationToScore(double averageDuration)
         {
-            // Shorter durations are more child-friendly
+            // shorter -> more child friendly
             if (averageDuration <= 1)
                 return 5;
             else if (averageDuration <= 2)
