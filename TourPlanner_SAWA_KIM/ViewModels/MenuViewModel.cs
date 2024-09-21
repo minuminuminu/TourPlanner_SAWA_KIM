@@ -37,6 +37,8 @@ namespace TourPlanner_SAWA_KIM.ViewModels
             ImportTour = new RelayCommand(OpenImportDialog);
             ExportTour = new RelayCommand(OpenSaveDialog);
             ToggleDarkMode = new RelayCommand(ToggleDark);
+            GenTourReport = new RelayCommand(GenerateTourReport);
+            GenSummaryReport = new RelayCommand(GenerateTourSummary);
 
             _tourService = tourService;
             _pdfService = pdfService;   
@@ -116,6 +118,88 @@ namespace TourPlanner_SAWA_KIM.ViewModels
                 catch (Exception e)
                 {
                     MessageBox.Show($"Error saving file: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private async void GenerateTourSummary()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Tour-Report files (*.pdf)|*.pdf";
+            saveFileDialog.DefaultExt = ".pdf";
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string fileName = saveFileDialog.FileName;
+
+                try
+                {
+                    var tours = await _tourService.GetAllToursWithLogs();
+                    _pdfService.GenerateSummaryReport(fileName, tours);
+                }
+                catch (ArgumentNullException argEx)
+                {
+                    MessageBox.Show($"A required argument was missing: {argEx.ParamName}", "Argument Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                catch (InvalidOperationException invalidOpEx)
+                {
+                    MessageBox.Show($"Invalid operation: {invalidOpEx.Message}", "Operation Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                catch (FileNotFoundException fileEx)
+                {
+                    MessageBox.Show($"File not found: {fileEx.FileName}", "File Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                catch (IOException ioEx)
+                {
+                    MessageBox.Show($"I/O Error while generating report: {ioEx.Message}", "I/O Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"An unexpected error occurred: {ex.Message}\n\nDetails:\n{ex.StackTrace}", "Unexpected Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private async void GenerateTourReport()
+        {
+            if (_selectedTour == null)
+            {
+                MessageBox.Show("Select a Tour first!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Tour-Report files (*.pdf)|*.pdf";
+            saveFileDialog.DefaultExt = ".pdf";
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string fileName = saveFileDialog.FileName;
+
+                try
+                {
+                    var tour = await _tourService.GetSingleTourWithLogsByIdAsync(_selectedTour.Id);
+                    _pdfService.GenerateTourReport(fileName, tour);
+                }
+                catch (ArgumentNullException argEx)
+                {
+                    MessageBox.Show($"A required argument was missing: {argEx.ParamName}", "Argument Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                catch (InvalidOperationException invalidOpEx)
+                {
+                    MessageBox.Show($"Invalid operation: {invalidOpEx.Message}", "Operation Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                catch (FileNotFoundException fileEx)
+                {
+                    MessageBox.Show($"File not found: {fileEx.FileName}", "File Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                catch (IOException ioEx)
+                {
+                    MessageBox.Show($"I/O Error while generating report: {ioEx.Message}", "I/O Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"An unexpected error occurred: {ex.Message}\n\nDetails:\n{ex.StackTrace}", "Unexpected Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }

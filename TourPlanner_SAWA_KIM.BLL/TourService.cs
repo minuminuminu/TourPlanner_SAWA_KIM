@@ -148,6 +148,21 @@ namespace TourPlanner_SAWA_KIM.BLL
             await JsonSerializer.SerializeAsync(createStream, tour);
         }
 
+        public async Task<Tour> GetSingleTourWithLogsByIdAsync(int id)
+        {
+            var tour = await _tourRepository.GetSingleTourWithLogsByIdAsync(id);
+            if (tour == null)
+            {
+                throw new ArgumentException($"Tour with ID {id} not found");
+            }
+            return tour;
+        }
+
+        public async Task<IEnumerable<Tour>> GetAllToursWithLogs()
+        {
+            return await _tourRepository.GetAllToursWithLogs();
+        }
+
         public async Task<Tour> UpdateTourAsync(Tour tour)
         {
             await SetTourGeoDataAsync(tour);

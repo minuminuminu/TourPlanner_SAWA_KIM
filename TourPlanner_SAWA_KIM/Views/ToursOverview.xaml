@@ -54,8 +54,7 @@
 		<!-- Route Tab -->
 		<TabItem Header="Route">
 			<Grid>
-				<!--<wpf:WebView2 x:Name="webView" Source="about:blank" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
--->
+				<wpf:WebView2 x:Name="webView" Source="about:blank" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 			</Grid>
 		</TabItem>
 

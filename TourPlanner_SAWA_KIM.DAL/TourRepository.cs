@@ -27,6 +27,16 @@ namespace TourPlanner_SAWA_KIM.DAL
             return await _context.Tours.FindAsync(id);
         }
 
+        public async Task<Tour?> GetSingleTourWithLogsByIdAsync(int id)
+        {
+            return await _context.Tours.Include(t => t.TourLogs).SingleOrDefaultAsync(t => t.Id == id);
+        }
+
+        public async Task<IEnumerable<Tour>> GetAllToursWithLogs()
+        {
+            return await _context.Tours.Include(t => t.TourLogs).ToListAsync();
+        }
+
         public async Task<Tour> AddTourAsync(Tour tour)
         {
             _context.Tours.Add(tour);

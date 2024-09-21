@@ -14,5 +14,7 @@ namespace TourPlanner_SAWA_KIM.DAL
         Task<Tour> AddTourAsync(Tour tour);
         Task<Tour> UpdateTourAsync(Tour tour);
         Task DeleteTourAsync(int id);
+        Task<Tour?> GetSingleTourWithLogsByIdAsync(int id);
+        Task<IEnumerable<Tour>> GetAllToursWithLogs();
     }
 }
