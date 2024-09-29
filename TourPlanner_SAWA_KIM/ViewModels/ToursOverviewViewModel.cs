@@ -4,7 +4,9 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using TourPlanner_SAWA_KIM.BLL;
 using TourPlanner_SAWA_KIM.Mediators;
 using TourPlanner_SAWA_KIM.Models;
 
@@ -16,6 +18,8 @@ namespace TourPlanner_SAWA_KIM.ViewModels
         private IMediator _mediator;
         private int _attributePopularity;
         private int _childFriendliness;
+        private string _directionsJson;
+        private readonly ITourService _tourService;
 
         public Tour SelectedTour
         {
@@ -27,6 +31,34 @@ namespace TourPlanner_SAWA_KIM.ViewModels
                     _selectedTour = value;
                     RaisePropertyChangedEvent(nameof(SelectedTour));
                 }
+            }
+        }
+
+        public string DirectionsJson
+        {
+            get => _directionsJson;
+            set
+            {
+                if (_directionsJson != value)
+                {
+                    _directionsJson = value;
+                    RaisePropertyChangedEvent(nameof(DirectionsJson));
+                }
+            }
+        }
+
+        public ToursOverviewViewModel(ITourService tourService)
+        {
+            _tourService = tourService;
+        }
+
+        private async Task UpdateDirectionsAsync()
+        {
+            if (SelectedTour != null)
+            {
+                // Fetch directions data using the tour service
+                var directionsData = await _tourService.GetRouteRawJSONAsync(SelectedTour);
+                DirectionsJson = JsonSerializer.Serialize(directionsData);
             }
         }
 
@@ -81,6 +113,7 @@ namespace TourPlanner_SAWA_KIM.ViewModels
         public void UpdateTourDetails(Tour tour)
         {
             SelectedTour = tour;
+            _ = UpdateDirectionsAsync();
         }
 
         public void ClearTourDetails()

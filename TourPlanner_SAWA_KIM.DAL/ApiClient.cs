@@ -11,14 +11,16 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using TourPlanner_SAWA_KIM.Exceptions;
+using TourPlanner_SAWA_KIM.Logging;
 using TourPlanner_SAWA_KIM.Models;
 
 namespace TourPlanner_SAWA_KIM.DAL
 {
-    public class ApiClient
+    public class ApiClient : IApiClient
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
+        private ILoggerWrapper logger = LoggerFactory.GetLogger();
 
         public ApiClient(HttpClient httpClient, IConfiguration configuration)
         {
@@ -53,6 +55,7 @@ namespace TourPlanner_SAWA_KIM.DAL
                 }
             }
 
+            logger.Error("Failed to retrieve coordinates");
             throw new FailedToRetrieveCoordinatesException("Failed to retrieve coordinates");
         }
 
@@ -86,6 +89,7 @@ namespace TourPlanner_SAWA_KIM.DAL
                 else
                 {
                     // Log response status code and content if the request fails
+                    logger.Error($"Route retrieval failed with status code: {response.StatusCode}");
                     var errorContent = await response.Content.ReadAsStringAsync();
                     Debug.WriteLine($"Route retrieval failed with status code: {response.StatusCode}, Response content: {errorContent}");
                 }

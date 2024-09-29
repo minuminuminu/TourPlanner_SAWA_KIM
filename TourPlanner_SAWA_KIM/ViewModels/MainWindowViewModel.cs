@@ -11,8 +11,8 @@ namespace TourPlanner_SAWA_KIM.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        private readonly TourService _tourService;
-        private readonly PDFService _pDFService;
+        private readonly ITourService _tourService;
+        private readonly IPDFService _pDFService;
 
         public MenuViewModel MenuViewModel { get; }
         public ToursListViewModel ToursListViewModel { get; }
@@ -20,15 +20,15 @@ namespace TourPlanner_SAWA_KIM.ViewModels
         public ToursLogsViewModel ToursLogsViewModel { get; }
         public SearchBarViewModel SearchBarViewModel { get; }
 
-        public MainWindowViewModel(TourService tourService, PDFService pdfService)
+        public MainWindowViewModel(ITourService tourService, IPDFService pdfService)
         {
             MenuViewModel = new MenuViewModel(tourService, pdfService);
             ToursListViewModel = new ToursListViewModel(tourService);
-            ToursOverviewViewModel = new ToursOverviewViewModel();
+            ToursOverviewViewModel = new ToursOverviewViewModel(tourService);
             ToursLogsViewModel = new ToursLogsViewModel(tourService);
             SearchBarViewModel = new SearchBarViewModel();
 
-            var mediator = new TourMediator(MenuViewModel, ToursListViewModel, ToursOverviewViewModel, ToursLogsViewModel);
+            var mediator = new TourMediator(SearchBarViewModel, MenuViewModel, ToursListViewModel, ToursOverviewViewModel, ToursLogsViewModel);
             _tourService = tourService;
         }
     }

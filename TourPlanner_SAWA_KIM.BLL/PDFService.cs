@@ -5,20 +5,22 @@ using iText.Layout;
 using iText.Layout.Element;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
+using TourPlanner_SAWA_KIM.Logging;
 using TourPlanner_SAWA_KIM.Models;
 
 namespace TourPlanner_SAWA_KIM.BLL
 {
-    public class PDFService
+    public class PDFService : IPDFService
     {
+        private ILoggerWrapper logger = LoggerFactory.GetLogger();
+
         public void GenerateTourReport(string filename, Tour tour)
         {
+            logger.Debug($"Starting to generate tour report for '{tour.Name}' into file '{filename}'.");
+
             try
             {
                 using (PdfWriter writer = new PdfWriter(filename))
@@ -70,80 +72,113 @@ namespace TourPlanner_SAWA_KIM.BLL
                         }
                     }
                 }
+
+                logger.Debug($"Successfully generated tour report for '{tour.Name}' into file '{filename}'.");
             }
             catch (UnauthorizedAccessException uaEx)
             {
+                logger.Error($"Access denied when generating tour report for '{tour.Name}': {uaEx.Message}");
                 MessageBox.Show($"Access denied: {uaEx.Message}", "Permission Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (DirectoryNotFoundException dnEx)
             {
+                logger.Error($"Directory not found when generating tour report for '{tour.Name}': {dnEx.Message}");
                 MessageBox.Show($"Directory not found: {dnEx.Message}", "Directory Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (IOException ioEx)
             {
+                logger.Error($"I/O error when generating tour report for '{tour.Name}': {ioEx.Message}");
                 MessageBox.Show($"I/O Error: {ioEx.Message}", "I/O Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An unexpected error occurred: {ex.ToString()}", "Unexpected Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                logger.Fatal($"An unexpected error occurred when generating tour report for '{tour.Name}': {ex}");
+                MessageBox.Show($"An unexpected error occurred: {ex}", "Unexpected Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         public void GenerateSummaryReport(string filename, IEnumerable<Tour> tours)
         {
-            using (PdfWriter writer = new PdfWriter(filename))
+            logger.Debug($"Starting to generate summary report into file '{filename}'.");
+
+            try
             {
-                using (PdfDocument pdf = new PdfDocument(writer))
+                using (PdfWriter writer = new PdfWriter(filename))
                 {
-                    using (Document document = new Document(pdf))
+                    using (PdfDocument pdf = new PdfDocument(writer))
                     {
-                        // Add report header
-                        Paragraph header = new Paragraph("Summary Report")
-                            .SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA))
-                            .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
-                            .SetFontSize(14)
-                            .SetBold();
-                        document.Add(header);
-
-                        document.Add(new Paragraph("\n"));
-
-                        // Loop through each tour to create a summary of its logs
-                        foreach (var tour in tours)
+                        using (Document document = new Document(pdf))
                         {
-                            // Calculate averages if there are logs
-                            if (tour.TourLogs != null && tour.TourLogs.Any())
+                            // Add report header
+                            Paragraph header = new Paragraph("Summary Report")
+                                .SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA))
+                                .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
+                                .SetFontSize(14)
+                                .SetBold();
+                            document.Add(header);
+
+                            document.Add(new Paragraph("\n"));
+
+                            // Loop through each tour to create a summary of its logs
+                            foreach (var tour in tours)
                             {
-                                var averageDuration = TimeSpan.FromTicks((long)tour.TourLogs.Average(tl => tl.Duration.Ticks));
-                                var averageDistance = tour.TourLogs.Average(tl => tl.Distance);
-                                var averageRating = tour.TourLogs.Average(tl => tl.Rating);
+                                // Calculate averages if there are logs
+                                if (tour.TourLogs != null && tour.TourLogs.Any())
+                                {
+                                    var averageDuration = TimeSpan.FromTicks((long)tour.TourLogs.Average(tl => tl.Duration.Ticks));
+                                    var averageDistance = tour.TourLogs.Average(tl => tl.Distance);
+                                    var averageRating = tour.TourLogs.Average(tl => tl.Rating);
 
-                                document.Add(new Paragraph($"Tour Name: {tour.Name}").SetFontSize(11).SetBold());
-                                document.Add(new Paragraph($"Description: {tour.Description}").SetFontSize(11));
-                                document.Add(new Paragraph($"From: {tour.From}, To: {tour.To}").SetFontSize(11));
-                                document.Add(new Paragraph($"Transport: {tour.TransportType}").SetFontSize(11));
+                                    document.Add(new Paragraph($"Tour Name: {tour.Name}").SetFontSize(11).SetBold());
+                                    document.Add(new Paragraph($"Description: {tour.Description}").SetFontSize(11));
+                                    document.Add(new Paragraph($"From: {tour.From}, To: {tour.To}").SetFontSize(11));
+                                    document.Add(new Paragraph($"Transport: {tour.TransportType}").SetFontSize(11));
 
-                                // Add calculated averages
-                                document.Add(new Paragraph($"Average Duration: {averageDuration}").SetFontSize(11));
-                                document.Add(new Paragraph($"Average Distance: {averageDistance:F2} km").SetFontSize(11)); // Format to 2 decimal places
-                                document.Add(new Paragraph($"Average Rating: {averageRating:F1}/5").SetFontSize(11)); // Format to 1 decimal place
+                                    // Add calculated averages
+                                    document.Add(new Paragraph($"Average Duration: {averageDuration}").SetFontSize(11));
+                                    document.Add(new Paragraph($"Average Distance: {averageDistance:F2} km").SetFontSize(11)); // Format to 2 decimal places
+                                    document.Add(new Paragraph($"Average Rating: {averageRating:F1}/5").SetFontSize(11)); // Format to 1 decimal place
+                                }
+                                else
+                                {
+                                    // Handle case when no logs are available for this tour
+                                    document.Add(new Paragraph($"Tour Name: {tour.Name}").SetFontSize(11).SetBold());
+                                    document.Add(new Paragraph($"Description: {tour.Description}").SetFontSize(11));
+                                    document.Add(new Paragraph($"From: {tour.From}, To: {tour.To}").SetFontSize(11));
+                                    document.Add(new Paragraph($"Transport: {tour.TransportType}").SetFontSize(11));
+                                    document.Add(new Paragraph("No logs available for this tour").SetFontSize(10).SetItalic());
+                                }
+
+                                // Add separator between tours
+                                document.Add(new Paragraph("\n----------------------------\n"));
                             }
-                            else
-                            {
-                                // Handle case when no logs are available for this tour
-                                document.Add(new Paragraph($"Tour Name: {tour.Name}").SetFontSize(11).SetBold());
-                                document.Add(new Paragraph($"Description: {tour.Description}").SetFontSize(11));
-                                document.Add(new Paragraph($"From: {tour.From}, To: {tour.To}").SetFontSize(11));
-                                document.Add(new Paragraph($"Transport: {tour.TransportType}").SetFontSize(11));
-                                document.Add(new Paragraph("No logs available for this tour").SetFontSize(10).SetItalic());
-                            }
 
-                            // Add separator between tours
-                            document.Add(new Paragraph("\n----------------------------\n"));
+                            document.Close();
                         }
-
-                        document.Close();
                     }
                 }
+
+                logger.Debug($"Successfully generated summary report into file '{filename}'.");
+            }
+            catch (UnauthorizedAccessException uaEx)
+            {
+                logger.Error($"Access denied when generating summary report: {uaEx.Message}");
+                MessageBox.Show($"Access denied: {uaEx.Message}", "Permission Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (DirectoryNotFoundException dnEx)
+            {
+                logger.Error($"Directory not found when generating summary report: {dnEx.Message}");
+                MessageBox.Show($"Directory not found: {dnEx.Message}", "Directory Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (IOException ioEx)
+            {
+                logger.Error($"I/O error when generating summary report: {ioEx.Message}");
+                MessageBox.Show($"I/O Error: {ioEx.Message}", "I/O Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                logger.Fatal($"An unexpected error occurred when generating summary report: {ex}");
+                MessageBox.Show($"An unexpected error occurred: {ex}", "Unexpected Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

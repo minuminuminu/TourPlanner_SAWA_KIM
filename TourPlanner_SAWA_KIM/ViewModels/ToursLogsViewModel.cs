@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TourPlanner_SAWA_KIM.BLL;
+using TourPlanner_SAWA_KIM.Logging;
 using TourPlanner_SAWA_KIM.Mediators;
 using TourPlanner_SAWA_KIM.Models;
 using TourPlanner_SAWA_KIM.Views.Windows;
@@ -16,10 +17,12 @@ namespace TourPlanner_SAWA_KIM.ViewModels
 {
     public class ToursLogsViewModel : ViewModelBase
     {
-        private readonly TourService _tourService;
+        private readonly ITourService _tourService;
         private IMediator _mediator;
         private TourLog _selectedTourLog;
         private Tour? _selectedTour;
+
+        private ILoggerWrapper logger = LoggerFactory.GetLogger();
 
         public ObservableCollection<TourLog> TourLogs { get; set; }
         public ICommand AddTourLogCommand { get; }
@@ -39,7 +42,7 @@ namespace TourPlanner_SAWA_KIM.ViewModels
             }
         }
 
-        public ToursLogsViewModel(TourService tourService)
+        public ToursLogsViewModel(ITourService tourService)
         {
             _tourService = tourService;
             TourLogs = new ObservableCollection<TourLog>();
@@ -69,21 +72,30 @@ namespace TourPlanner_SAWA_KIM.ViewModels
             addTourLogWindow.DataContext = addTourLogWindowViewModel;
             addTourLogWindowViewModel.CloseAction = () => addTourLogWindow.Close();
 
-            if(addTourLogWindow.ShowDialog() == true)
+            if (addTourLogWindow.ShowDialog() == true)
             {
-                var newTourLog = new TourLog(addTourLogWindowViewModel.Rating, addTourLogWindowViewModel.Date, addTourLogWindowViewModel.Duration, addTourLogWindowViewModel.Distance, addTourLogWindowViewModel.Difficulty, addTourLogWindowViewModel.Comment);
+                var newTourLog = new TourLog(
+                    addTourLogWindowViewModel.Rating,
+                    addTourLogWindowViewModel.Date,
+                    addTourLogWindowViewModel.Duration,
+                    addTourLogWindowViewModel.Distance,
+                    addTourLogWindowViewModel.Difficulty,
+                    addTourLogWindowViewModel.Comment
+                );
                 newTourLog.TourId = _selectedTour.Id;
 
                 try
                 {
+                    logger.Debug($"Attempting to add a new tour log for Tour ID {_selectedTour.Id}.");
                     var addedTourLog = await _tourService.AddTourLogAsync(newTourLog);
                     TourLogs.Add(addedTourLog);
 
                     _mediator?.Notify(this, "TourLogsLoaded");
+                    logger.Debug($"Successfully added a new tour log with ID {addedTourLog.Id} for Tour ID {_selectedTour.Id}.");
                 }
                 catch (DbUpdateException dbEx)
                 {
-                    // This handles database update-specific exceptions
+                    logger.Error($"Failed to add tour log for Tour ID {_selectedTour.Id}: {dbEx.Message}");
                     var detailedError = new StringBuilder();
                     detailedError.AppendLine($"Failed to add tour log: {dbEx.Message}");
 
@@ -103,7 +115,7 @@ namespace TourPlanner_SAWA_KIM.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    // General exception handling
+                    logger.Error($"An unexpected error occurred while adding a tour log for Tour ID {_selectedTour.Id}: {ex.Message}");
                     var detailedError = new StringBuilder();
                     detailedError.AppendLine($"An unexpected error occurred: {ex.Message}");
 
@@ -120,17 +132,22 @@ namespace TourPlanner_SAWA_KIM.ViewModels
             }
         }
 
+
         public async Task AddImportedTourLogs(IEnumerable<TourLog> tourLogs)
         {
             try
             {
+                logger.Debug("Starting import of tour logs.");
                 foreach (var tourLog in tourLogs)
                 {
-                    var addedLog = await _tourService.AddTourLogAsync(tourLog);
+                    await _tourService.AddTourLogAsync(tourLog);
+                    // To avoid overlogging, we're not logging each individual tour log addition.
                 }
+                logger.Debug("Successfully imported all tour logs.");
             }
             catch (Exception ex)
             {
+                logger.Error($"Failed to add imported tour logs: {ex.Message}");
                 System.Windows.MessageBox.Show($"Failed to add imported tour logs: {ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
         }
@@ -145,14 +162,16 @@ namespace TourPlanner_SAWA_KIM.ViewModels
 
             try
             {
+                logger.Debug($"Attempting to remove tour log with ID {SelectedTourLog.Id}.");
                 await _tourService.DeleteTourLogAsync(SelectedTourLog.Id);
+                logger.Debug($"Successfully removed tour log with ID {SelectedTourLog.Id}.");
                 TourLogs.Remove(SelectedTourLog);
 
                 _mediator?.Notify(this, "TourLogsLoaded");
-                //_selectedTour = null; why did i do this again
             }
             catch (Exception ex)
             {
+                logger.Error($"Failed to remove tour log with ID {SelectedTourLog.Id}: {ex.Message}");
                 System.Windows.MessageBox.Show($"Failed to remove tour log: {ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
         }
@@ -183,12 +202,15 @@ namespace TourPlanner_SAWA_KIM.ViewModels
 
                     try
                     {
+                        logger.Debug($"Attempting to update tour log with ID {SelectedTourLog.Id}.");
                         await _tourService.UpdateTourLogAsync(SelectedTourLog);
 
                         _mediator?.Notify(this, "TourLogsLoaded");
+                        logger.Debug($"Successfully updated tour log with ID {SelectedTourLog.Id}.");
                     }
                     catch (Exception ex)
                     {
+                        logger.Error($"Failed to update tour log with ID {SelectedTourLog.Id}: {ex.Message}");
                         System.Windows.MessageBox.Show($"Failed to update tour log: {ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                     }
                 }

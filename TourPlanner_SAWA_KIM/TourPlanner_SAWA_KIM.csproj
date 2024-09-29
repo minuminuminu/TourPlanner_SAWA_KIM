@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="itext7" Version="8.0.5" />
     <PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.5" />
+    <PackageReference Include="log4net" Version="3.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
@@ -23,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Models\TourPlanner_SAWA_KIM.Models.csproj" />
     <ProjectReference Include="..\TourPlanner_SAWA_KIM.BLL\TourPlanner_SAWA_KIM.BLL.csproj" />
+    <ProjectReference Include="..\TourPlanner_SAWA_KIM.Logging\TourPlanner_SAWA_KIM.Logging.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,9 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Resources\directions.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Resources\leaflet.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

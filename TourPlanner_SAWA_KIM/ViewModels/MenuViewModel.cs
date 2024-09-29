@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Input;
 using TourPlanner_SAWA_KIM.BLL;
 using TourPlanner_SAWA_KIM.Exceptions;
+using TourPlanner_SAWA_KIM.Logging;
 using TourPlanner_SAWA_KIM.Mediators;
 using TourPlanner_SAWA_KIM.Models;
 
@@ -19,8 +20,9 @@ namespace TourPlanner_SAWA_KIM.ViewModels
     {
         private Tour _selectedTour;
         private IMediator _mediator;
-        private readonly TourService _tourService;
-        private readonly PDFService _pdfService;
+        private readonly ITourService _tourService;
+        private readonly IPDFService _pdfService;
+        private ILoggerWrapper logger = LoggerFactory.GetLogger();
 
         public Tour ImportedTour { get; set; }
         public ICommand GenTourReport { get; }
@@ -31,7 +33,7 @@ namespace TourPlanner_SAWA_KIM.ViewModels
         public ICommand ToggleDarkMode { get; }
 
 
-        public MenuViewModel(TourService tourService, PDFService pdfService)
+        public MenuViewModel(ITourService tourService, IPDFService pdfService)
         {
             ExitProgram = new RelayCommand(ExitApplication);
             ImportTour = new RelayCommand(OpenImportDialog);
@@ -52,7 +54,11 @@ namespace TourPlanner_SAWA_KIM.ViewModels
         private void ToggleDark()
         {
             var app = Application.Current;
-            if (app == null) return;
+            if (app == null)
+            {
+                logger.Warn("Application.Current is null in ToggleDark().");
+                return;
+            }
 
             var dictionaries = app.Resources.MergedDictionaries;
             var darkTheme = dictionaries.FirstOrDefault(d => d.Source?.OriginalString == "/Themes/DarkTheme.xaml");
@@ -62,11 +68,13 @@ namespace TourPlanner_SAWA_KIM.ViewModels
             {
                 dictionaries.Remove(darkTheme);
                 dictionaries.Add(new ResourceDictionary { Source = new Uri("/Themes/LightTheme.xaml", UriKind.Relative) });
+                logger.Debug("Switched to Light Theme.");
             }
             else
             {
                 dictionaries.Remove(lightTheme);
                 dictionaries.Add(new ResourceDictionary { Source = new Uri("/Themes/DarkTheme.xaml", UriKind.Relative) });
+                logger.Debug("Switched to Dark Theme.");
             }
         }
 
@@ -80,24 +88,33 @@ namespace TourPlanner_SAWA_KIM.ViewModels
 
                 try
                 {
+                    logger.Debug($"Attempting to import tour from file '{fileName}'.");
                     ImportedTour = await _tourService.ImportTour(fileName);
-                    foreach(var log in ImportedTour.ImportedTourLogsList)
+
+                    foreach (var log in ImportedTour.ImportedTourLogsList)
                     {
                         log.TourId = ImportedTour.Id;
                     }
 
                     await _mediator.Notify(this, "TourImported");
+                    logger.Debug($"Successfully imported tour '{ImportedTour.Name}' from file '{fileName}'.");
                 }
-                catch (FailedToImportTourException)
+                catch (FailedToImportTourException ex)
                 {
-                    MessageBox.Show($"Error importing file!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    logger.Error($"Failed to import tour from file '{fileName}': {ex.Message}");
+                    MessageBox.Show("Error importing file!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error($"An unexpected error occurred while importing tour from file '{fileName}': {ex.Message}");
+                    MessageBox.Show($"Error importing file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
 
         private async void OpenSaveDialog()
         {
-            if(_selectedTour == null)
+            if (_selectedTour == null)
             {
                 MessageBox.Show("Select a Tour to export first!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -113,10 +130,13 @@ namespace TourPlanner_SAWA_KIM.ViewModels
 
                 try
                 {
+                    logger.Debug($"Attempting to export tour '{_selectedTour.Name}' to file '{fileName}'.");
                     await _tourService.ExportTour(_selectedTour, fileName);
+                    logger.Debug($"Successfully exported tour '{_selectedTour.Name}' to file '{fileName}'.");
                 }
                 catch (Exception e)
                 {
+                    logger.Error($"Failed to export tour '{_selectedTour.Name}' to file '{fileName}': {e.Message}");
                     MessageBox.Show($"Error saving file: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }

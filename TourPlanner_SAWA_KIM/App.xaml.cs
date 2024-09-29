@@ -27,7 +27,7 @@ namespace TourPlanner_SAWA_KIM
             HttpClient httpClient = new HttpClient();
 
             var dbContext = new AppDbContext(configuration);
-            var apiClient = new ApiClient(httpClient, configuration);
+            IApiClient apiClient = new ApiClient(httpClient, configuration);
 
             try
             {
@@ -42,8 +42,8 @@ namespace TourPlanner_SAWA_KIM
             ITourRepository tourRepository = new TourRepository(dbContext);
             ITourLogRepository tourLogRepository = new TourLogRepository(dbContext);
 
-            var tourService = new TourService(tourRepository, tourLogRepository, apiClient);
-            var pdfService = new PDFService();
+            ITourService tourService = new TourService(tourRepository, tourLogRepository, apiClient);
+            IPDFService pdfService = new PDFService();
 
             var mainWindowViewModel = new MainWindowViewModel(tourService, pdfService);
             var mainWindow = new MainWindow();

@@ -15,8 +15,9 @@ namespace TourPlanner_SAWA_KIM.Mediators
         private readonly ToursListViewModel _toursListViewModel;
         private readonly ToursOverviewViewModel _toursOverviewViewModel;
         private readonly ToursLogsViewModel _toursLogsViewModel;
+        private readonly SearchBarViewModel _searchBarViewModel;
 
-        public TourMediator(MenuViewModel menuViewModel, ToursListViewModel toursListViewModel, ToursOverviewViewModel tourOverviewViewModel, ToursLogsViewModel toursLogsViewModel)
+        public TourMediator(SearchBarViewModel searchBarViewModel,  MenuViewModel menuViewModel, ToursListViewModel toursListViewModel, ToursOverviewViewModel tourOverviewViewModel, ToursLogsViewModel toursLogsViewModel)
         {
             _menuViewModel = menuViewModel;
             _menuViewModel.SetMediator(this);
@@ -29,6 +30,9 @@ namespace TourPlanner_SAWA_KIM.Mediators
 
             _toursLogsViewModel = toursLogsViewModel;
             _toursLogsViewModel.SetMediator(this);
+
+            _searchBarViewModel = searchBarViewModel;
+            _searchBarViewModel.SetMediator(this);
         }
 
         public async Task Notify(object sender, string eventName)
@@ -54,6 +58,9 @@ namespace TourPlanner_SAWA_KIM.Mediators
             {
                 _toursListViewModel.AddTour(_menuViewModel.ImportedTour);
                 await _toursLogsViewModel.AddImportedTourLogs(_menuViewModel.ImportedTour.ImportedTourLogsList);
+            } else if(eventName == "Search")
+            {
+                _toursListViewModel.FilterTours(_searchBarViewModel.Content);
             }
         }
     }

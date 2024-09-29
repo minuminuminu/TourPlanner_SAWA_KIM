@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:TourPlanner_SAWA_KIM.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-	<TabControl>
+	<TabControl VirtualizingStackPanel.IsVirtualizing="False">
 		<!-- General Tab -->
 		<TabItem Header="General">
 			<ScrollViewer VerticalScrollBarVisibility="Auto" Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource ForegroundBrush}">

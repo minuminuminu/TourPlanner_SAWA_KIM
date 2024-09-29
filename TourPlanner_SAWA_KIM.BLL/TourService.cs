@@ -13,13 +13,13 @@ using TourPlanner_SAWA_KIM.Models;
 
 namespace TourPlanner_SAWA_KIM.BLL
 {
-    public class TourService
+    public class TourService : ITourService
     {
         private readonly ITourRepository _tourRepository;
         private readonly ITourLogRepository _tourLogRepository;
-        private readonly ApiClient _apiClient;
+        private readonly IApiClient _apiClient;
 
-        public TourService(ITourRepository tourRepository, ITourLogRepository tourLogRepository, ApiClient apiClient)
+        public TourService(ITourRepository tourRepository, ITourLogRepository tourLogRepository, IApiClient apiClient)
         {
             _tourRepository = tourRepository;
             _tourLogRepository = tourLogRepository;

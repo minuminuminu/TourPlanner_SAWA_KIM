@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Input;
 using TourPlanner_SAWA_KIM.BLL;
 using TourPlanner_SAWA_KIM.Exceptions;
+using TourPlanner_SAWA_KIM.Logging;
 using TourPlanner_SAWA_KIM.Mediators;
 using TourPlanner_SAWA_KIM.Models;
 using TourPlanner_SAWA_KIM.Views.Windows;
@@ -19,7 +20,9 @@ namespace TourPlanner_SAWA_KIM.ViewModels
     {
         private Tour _currentTour;
         private IMediator _mediator;
-        private readonly TourService _tourService;
+        private readonly ITourService _tourService;
+        private ILoggerWrapper logger = LoggerFactory.GetLogger();
+        private List<Tour> _allTours;
 
         public ObservableCollection<Tour> Tours { get; set; }
 
@@ -32,7 +35,6 @@ namespace TourPlanner_SAWA_KIM.ViewModels
             get { return _currentTour; }
             set
             {
-                //if ((_currentTour != value) && (value != null))
                 if (_currentTour != value)
                 {
                     _currentTour = value;
@@ -47,9 +49,10 @@ namespace TourPlanner_SAWA_KIM.ViewModels
             _mediator = mediator;
         }
 
-        public ToursListViewModel(TourService tourService)
+        public ToursListViewModel(ITourService tourService)
         {
             Tours = new ObservableCollection<Tour>();
+            _allTours = new List<Tour>();
 
             AddTourCommand = new RelayCommand(async () => await AddTour());
             RemoveTourCommand = new RelayCommand(async () => await RemoveTour());
@@ -65,6 +68,29 @@ namespace TourPlanner_SAWA_KIM.ViewModels
             Tours.Add(tour);
         }
 
+        public void FilterTours(string searchText)
+        {
+            Tours.Clear();
+            if (string.IsNullOrEmpty(searchText))
+            {
+                LoadTours();
+            }
+            else
+            {
+                var filteredTours = _allTours.Where(tour =>
+                    tour.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                    tour.From.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                    tour.To.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                    tour.Description.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+                ).ToList();
+
+                foreach (var tour in filteredTours)
+                {
+                    Tours.Add(tour);
+                }
+            }
+        }
+
         private async Task AddTour()
         {
             var addTourWindow = new AddTourWindow();
@@ -75,23 +101,34 @@ namespace TourPlanner_SAWA_KIM.ViewModels
 
             if (addTourWindow.ShowDialog() == true)
             {
-                var newTour = new Tour(addTourViewModel.Name, addTourViewModel.Description, addTourViewModel.From, addTourViewModel.To, addTourViewModel.TransportType);
+                var newTour = new Tour(
+                    addTourViewModel.Name,
+                    addTourViewModel.Description,
+                    addTourViewModel.From,
+                    addTourViewModel.To,
+                    addTourViewModel.TransportType
+                );
 
                 try
                 {
+                    logger.Debug($"Attempting to add new tour: {newTour.Name}");
                     var addedTour = await _tourService.AddTourAndGeoCodesAsync(newTour);
                     Tours.Add(addedTour);
+                    logger.Debug($"Successfully added tour: {addedTour.Name} with ID {addedTour.Id}");
                 }
-                catch (FailedToRetrieveCoordinatesException)
+                catch (FailedToRetrieveCoordinatesException ex)
                 {
-                    System.Windows.MessageBox.Show($"Failed to find locations", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                    logger.Error($"Failed to retrieve coordinates for tour '{newTour.Name}': {ex.Message}");
+                    System.Windows.MessageBox.Show("Failed to find locations", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                 }
-                catch (FailedToRetrieveRouteException)
+                catch (FailedToRetrieveRouteException ex)
                 {
-                    System.Windows.MessageBox.Show($"Failed to create route", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                    logger.Error($"Failed to retrieve route for tour '{newTour.Name}': {ex.Message}");
+                    System.Windows.MessageBox.Show("Failed to create route", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                 }
                 catch (Exception ex)
                 {
+                    logger.Error($"Failed to add tour '{newTour.Name}': {ex.Message}");
                     System.Windows.MessageBox.Show($"Failed to add tour: {ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                 }
             }
@@ -107,17 +144,21 @@ namespace TourPlanner_SAWA_KIM.ViewModels
             {
                 try
                 {
+                    logger.Debug($"Attempting to remove tour with ID {CurrentTour.Id} and Name '{CurrentTour.Name}'");
                     await _tourService.DeleteTourAsync(CurrentTour.Id);
+                    logger.Debug($"Successfully removed tour with ID {CurrentTour.Id}");
                     Tours.Remove(CurrentTour);
                     CurrentTour = null;
                     _mediator?.Notify(this, "TourRemoved");
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    logger.Error($"Failed to remove tour with ID {CurrentTour.Id}: {ex.Message}");
+                    MessageBox.Show($"Failed to remove tour: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
+
 
         private async Task ModifyTour()
         {
@@ -143,10 +184,13 @@ namespace TourPlanner_SAWA_KIM.ViewModels
 
                     try
                     {
+                        logger.Debug($"Attempting to update tour with ID {CurrentTour.Id}");
                         await _tourService.UpdateTourAsync(CurrentTour);
+                        logger.Debug($"Successfully updated tour with ID {CurrentTour.Id}");
                     }
                     catch (Exception ex)
                     {
+                        logger.Error($"Failed to update tour with ID {CurrentTour.Id}: {ex.Message}");
                         System.Windows.MessageBox.Show($"Failed to update tour: {ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                     }
                 }
@@ -158,6 +202,7 @@ namespace TourPlanner_SAWA_KIM.ViewModels
             try
             {
                 var tours = await _tourService.GetAllToursAsync();
+                _allTours = tours.ToList();
 
                 foreach (var tour in tours)
                 {
