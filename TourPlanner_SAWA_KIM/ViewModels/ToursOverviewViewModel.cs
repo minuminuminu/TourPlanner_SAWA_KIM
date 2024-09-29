@@ -56,7 +56,6 @@ namespace TourPlanner_SAWA_KIM.ViewModels
         {
             if (SelectedTour != null)
             {
-                // Fetch directions data using the tour service
                 var directionsData = await _tourService.GetRouteRawJSONAsync(SelectedTour);
                 DirectionsJson = JsonSerializer.Serialize(directionsData);
             }
@@ -172,7 +171,6 @@ namespace TourPlanner_SAWA_KIM.ViewModels
                 double averageDistance = tourLogs.Average(log => log.Distance);
                 double distanceScore = MapDistanceToScore(averageDistance);
 
-                // Combine scores to compute overall child-friendliness
                 double totalScore = (averageDifficultyScore + durationScore + distanceScore) / 3.0;
 
                 ChildFriendliness = (int)Math.Round(totalScore);

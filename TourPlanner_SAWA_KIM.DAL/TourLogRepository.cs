@@ -28,23 +28,19 @@ namespace TourPlanner_SAWA_KIM.DAL
             {
                 if (tourLog.Tour != null)
                 {
-                    // Ensure the Tour entity is being tracked properly
                     _context.Tours.Attach(tourLog.Tour);
                 }
                 else
                 {
-                    // Fetch the associated Tour from the database
                     var assignedTour = await _context.Tours.FindAsync(tourLog.TourId);
                     if (assignedTour == null)
                     {
                         throw new ArgumentException($"Invalid TourId {tourLog.TourId}. The Tour does not exist.");
                     }
 
-                    // Assign the fetched Tour to the TourLog
                     tourLog.Tour = assignedTour;
                 }
 
-                // Add the new TourLog
                 _context.TourLogs.Add(tourLog);
                 await _context.SaveChangesAsync();
 
@@ -52,11 +48,9 @@ namespace TourPlanner_SAWA_KIM.DAL
             }
             catch (DbUpdateException dbEx)
             {
-                // Handle database update exceptions, common in EF when saving changes
                 var detailedError = new StringBuilder();
                 detailedError.AppendLine($"Database update exception: {dbEx.Message}");
 
-                // Capture inner exception details if they exist
                 if (dbEx.InnerException != null)
                 {
                     detailedError.AppendLine($"Inner Exception: {dbEx.InnerException.Message}");
@@ -71,11 +65,9 @@ namespace TourPlanner_SAWA_KIM.DAL
             }
             catch (InvalidOperationException ioEx)
             {
-                // Handle invalid operations (e.g., entity state issues)
                 var detailedError = new StringBuilder();
                 detailedError.AppendLine($"Invalid operation exception: {ioEx.Message}");
 
-                // Capture inner exception details if they exist
                 if (ioEx.InnerException != null)
                 {
                     detailedError.AppendLine($"Inner Exception: {ioEx.InnerException.Message}");
@@ -86,11 +78,9 @@ namespace TourPlanner_SAWA_KIM.DAL
             }
             catch (Exception ex)
             {
-                // Handle all other general exceptions
                 var detailedError = new StringBuilder();
                 detailedError.AppendLine($"General exception: {ex.Message}");
 
-                // Capture inner exception details if they exist
                 if (ex.InnerException != null)
                 {
                     detailedError.AppendLine($"Inner Exception: {ex.InnerException.Message}");

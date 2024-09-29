@@ -34,16 +34,12 @@ namespace TourPlanner_SAWA_KIM.DAL
             var encodedAddress = Uri.EscapeDataString(address);
             var requestUrl = $"https://api.openrouteservice.org/geocode/search?api_key={_apiKey}&text={encodedAddress}";
 
-            // get request to api
             var response = await _httpClient.GetAsync(requestUrl);
             if (response.IsSuccessStatusCode)
             {
-                // response into pure string
                 var content = await response.Content.ReadAsStringAsync();
 
-                // parse into JObject - newtonsoft.json
                 var json = JObject.Parse(content);
-                // extract coordinates while checking for null -> if yes -> coordinates is null
                 var coordinates = json["features"]?[0]?["geometry"]?["coordinates"];
 
                 if (coordinates != null)
@@ -88,7 +84,6 @@ namespace TourPlanner_SAWA_KIM.DAL
                 }
                 else
                 {
-                    // Log response status code and content if the request fails
                     logger.Error($"Route retrieval failed with status code: {response.StatusCode}");
                     var errorContent = await response.Content.ReadAsStringAsync();
                     Debug.WriteLine($"Route retrieval failed with status code: {response.StatusCode}, Response content: {errorContent}");
@@ -96,12 +91,10 @@ namespace TourPlanner_SAWA_KIM.DAL
             }
             catch (HttpRequestException httpEx)
             {
-                // Log detailed HTTP request error
                 Debug.WriteLine($"HTTP Request error: {httpEx.Message}");
             }
             catch (Exception ex)
             {
-                // Log any other general exceptions
                 Debug.WriteLine($"An unexpected error occurred: {ex.Message}");
                 Debug.WriteLine(ex.StackTrace); // Log stack trace for more details
             }

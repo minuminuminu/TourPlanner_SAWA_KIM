@@ -109,7 +109,6 @@ namespace TourPlanner_SAWA_KIM.BLL
                     {
                         using (Document document = new Document(pdf))
                         {
-                            // Add report header
                             Paragraph header = new Paragraph("Summary Report")
                                 .SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA))
                                 .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
@@ -119,10 +118,8 @@ namespace TourPlanner_SAWA_KIM.BLL
 
                             document.Add(new Paragraph("\n"));
 
-                            // Loop through each tour to create a summary of its logs
                             foreach (var tour in tours)
                             {
-                                // Calculate averages if there are logs
                                 if (tour.TourLogs != null && tour.TourLogs.Any())
                                 {
                                     var averageDuration = TimeSpan.FromTicks((long)tour.TourLogs.Average(tl => tl.Duration.Ticks));
@@ -134,14 +131,12 @@ namespace TourPlanner_SAWA_KIM.BLL
                                     document.Add(new Paragraph($"From: {tour.From}, To: {tour.To}").SetFontSize(11));
                                     document.Add(new Paragraph($"Transport: {tour.TransportType}").SetFontSize(11));
 
-                                    // Add calculated averages
                                     document.Add(new Paragraph($"Average Duration: {averageDuration}").SetFontSize(11));
                                     document.Add(new Paragraph($"Average Distance: {averageDistance:F2} km").SetFontSize(11)); // Format to 2 decimal places
                                     document.Add(new Paragraph($"Average Rating: {averageRating:F1}/5").SetFontSize(11)); // Format to 1 decimal place
                                 }
                                 else
                                 {
-                                    // Handle case when no logs are available for this tour
                                     document.Add(new Paragraph($"Tour Name: {tour.Name}").SetFontSize(11).SetBold());
                                     document.Add(new Paragraph($"Description: {tour.Description}").SetFontSize(11));
                                     document.Add(new Paragraph($"From: {tour.From}, To: {tour.To}").SetFontSize(11));
@@ -149,7 +144,6 @@ namespace TourPlanner_SAWA_KIM.BLL
                                     document.Add(new Paragraph("No logs available for this tour").SetFontSize(10).SetItalic());
                                 }
 
-                                // Add separator between tours
                                 document.Add(new Paragraph("\n----------------------------\n"));
                             }
 

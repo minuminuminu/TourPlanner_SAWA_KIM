@@ -99,7 +99,6 @@ namespace TourPlanner_SAWA_KIM.ViewModels
                     var detailedError = new StringBuilder();
                     detailedError.AppendLine($"Failed to add tour log: {dbEx.Message}");
 
-                    // Include inner exception details if available
                     if (dbEx.InnerException != null)
                     {
                         detailedError.AppendLine($"Inner Exception: {dbEx.InnerException.Message}");
@@ -119,7 +118,6 @@ namespace TourPlanner_SAWA_KIM.ViewModels
                     var detailedError = new StringBuilder();
                     detailedError.AppendLine($"An unexpected error occurred: {ex.Message}");
 
-                    // Include inner exception details if available
                     if (ex.InnerException != null)
                     {
                         detailedError.AppendLine($"Inner Exception: {ex.InnerException.Message}");
@@ -141,7 +139,6 @@ namespace TourPlanner_SAWA_KIM.ViewModels
                 foreach (var tourLog in tourLogs)
                 {
                     await _tourService.AddTourLogAsync(tourLog);
-                    // To avoid overlogging, we're not logging each individual tour log addition.
                 }
                 logger.Debug("Successfully imported all tour logs.");
             }
